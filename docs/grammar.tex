@@ -1,0 +1,379 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\lstdefinestyle{bnf}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  columns=flexible,
+}
+
+\title{\textbf{Decaf Grammar Specification}\\
+       \large CS-471L Compiler Construction Lab\\
+       University of Engineering \& Technology, Lahore\\
+       Spring 2026}
+\author{Compiler Project Team}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------
+\section{Language Overview}
+% ------------------------------------------------------------------
+
+Decaf is a strongly-typed, object-oriented language designed for compiler
+construction courses. It is a strict subset of Java with a simplified type
+system and a fixed set of built-in I/O operations. The language supports:
+
+\begin{itemize}
+  \item Primitive types: \texttt{int}, \texttt{double}, \texttt{bool},
+        \texttt{string}
+  \item One-dimensional arrays of any primitive or class type
+  \item Class declarations with optional single inheritance
+        (\texttt{extends}) and interface implementation (\texttt{implements})
+  \item Interface declarations (method prototype lists only)
+  \item Function declarations at global scope and as class members
+  \item A full expression language with 9 levels of operator precedence
+  \item Control flow: \texttt{if}/\texttt{else}, \texttt{while},
+        \texttt{for}, \texttt{return}, \texttt{break}
+  \item Built-in operations: \texttt{Print}, \texttt{ReadInteger},
+        \texttt{ReadLine}, \texttt{New}, \texttt{NewArray}
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{BNF Grammar --- LL(1) Form}
+% ------------------------------------------------------------------
+
+The grammar below is the parser-ready, left-recursion-free,
+left-factored form used by all three parsers in this project.
+
+\subsection{Program Structure}
+
+\begin{lstlisting}[style=bnf]
+Program    ::= DeclList
+DeclList   ::= Decl DeclList  |  epsilon
+Decl       ::= VarDecl | FuncDecl | ClassDecl | InterfaceDecl
+\end{lstlisting}
+
+\subsection{Variable and Function Declarations}
+
+\begin{lstlisting}[style=bnf]
+VarDecl    ::= Type id ;
+
+FuncDecl   ::= RetType id ( Formals ) Block
+
+RetType    ::= Type  |  void
+
+Type       ::= int TypeSuffix  |  double TypeSuffix
+             | bool TypeSuffix  |  string TypeSuffix
+             | id TypeSuffix
+
+TypeSuffix ::= [ ] TypeSuffix  |  epsilon
+
+Formals    ::= ParamList  |  epsilon
+
+ParamList  ::= Param ParamTail
+ParamTail  ::= , Param ParamTail  |  epsilon
+Param      ::= Type id
+\end{lstlisting}
+
+\subsection{Class and Interface Declarations}
+
+\begin{lstlisting}[style=bnf]
+ClassDecl      ::= class id ClassBase ClassImpl { FieldList }
+ClassBase      ::= extends id  |  epsilon
+ClassImpl      ::= implements IdentList  |  epsilon
+IdentList      ::= id IdentListTail
+IdentListTail  ::= , id IdentListTail  |  epsilon
+FieldList      ::= Field FieldList  |  epsilon
+Field          ::= VarDecl  |  FuncDecl
+
+InterfaceDecl  ::= interface id { ProtoList }
+ProtoList      ::= Proto ProtoList  |  epsilon
+Proto          ::= RetType id ( Formals ) ;
+\end{lstlisting}
+
+\subsection{Blocks and Statements}
+
+\begin{lstlisting}[style=bnf]
+Block      ::= { StmtList }
+StmtList   ::= Stmt StmtList  |  epsilon
+Stmt       ::= VarDecl | ExprStmt | IfStmt | WhileStmt | ForStmt
+             | ReturnStmt | BreakStmt | PrintStmt | Block
+
+ExprStmt   ::= Expr ;
+IfStmt     ::= if ( Expr ) Stmt ElsePart
+ElsePart   ::= else Stmt  |  epsilon
+WhileStmt  ::= while ( Expr ) Stmt
+ForStmt    ::= for ( ForInit ; Expr ; ForUpdate ) Stmt
+ForInit    ::= Expr  |  epsilon
+ForUpdate  ::= Expr  |  epsilon
+
+ReturnStmt ::= return RetExprOpt ;
+RetExprOpt ::= Expr  |  epsilon
+BreakStmt  ::= break ;
+PrintStmt  ::= Print ( ExprList ) ;
+
+ExprList     ::= Expr ExprListTail
+ExprListTail ::= , Expr ExprListTail  |  epsilon
+\end{lstlisting}
+
+\subsection{Expressions}
+
+\begin{lstlisting}[style=bnf]
+Expr       ::= OrExpr AssignTail
+AssignTail ::= = Expr  |  epsilon
+
+OrExpr   ::= AndExpr OrTail
+OrTail   ::= || AndExpr OrTail  |  epsilon
+
+AndExpr  ::= EqExpr AndTail
+AndTail  ::= && EqExpr AndTail  |  epsilon
+
+EqExpr   ::= RelExpr EqTail
+EqTail   ::= == RelExpr  |  != RelExpr  |  epsilon
+
+RelExpr  ::= AddExpr RelTail
+RelTail  ::= < AddExpr | <= AddExpr | > AddExpr | >= AddExpr | epsilon
+
+AddExpr  ::= MulExpr AddTail
+AddTail  ::= + MulExpr AddTail  |  - MulExpr AddTail  |  epsilon
+
+MulExpr  ::= UnaryExpr MulTail
+MulTail  ::= * UnaryExpr MulTail | / UnaryExpr MulTail
+           | % UnaryExpr MulTail | epsilon
+
+UnaryExpr ::= ! UnaryExpr  |  - UnaryExpr  |  PostExpr
+
+PostExpr  ::= Primary PostTail
+PostTail  ::= [ Expr ] PostTail
+            | . id CallTail PostTail
+            | epsilon
+
+CallTail  ::= ( ActualList )  |  epsilon
+
+Primary   ::= id CallTail | INT_CONST | DOUBLE_CONST | BOOL_CONST
+            | STRING_CONST | null | this | ( Expr )
+            | ReadInteger ( ) | ReadLine ( )
+            | New ( id ) | NewArray ( Expr , Type )
+
+ActualList ::= Expr ExprListTail  |  epsilon
+\end{lstlisting}
+
+% ------------------------------------------------------------------
+\section{Left-Recursion Removal}
+% ------------------------------------------------------------------
+
+\subsection{Array Type Suffix}
+
+The original Decaf specification includes the left-recursive rule:
+\[
+  \textit{Type} \;\rightarrow\; \textit{int} \;\mid\; \ldots \;\mid\;
+  \textit{Type}\;\texttt{[]}\quad\text{(left-recursive)}
+\]
+
+This was transformed by introducing \texttt{TypeSuffix}:
+\begin{align*}
+  \textit{Type}       &\rightarrow \texttt{int}\;\textit{TypeSuffix}
+                         \;\mid\; \ldots \;\mid\;
+                         \texttt{id}\;\textit{TypeSuffix}\\
+  \textit{TypeSuffix} &\rightarrow \texttt{[}\;\texttt{]}\;\textit{TypeSuffix}
+                         \;\mid\; \varepsilon
+\end{align*}
+
+\subsection{Expression Left Recursion}
+
+The standard left-recursive arithmetic grammar:
+\[
+  \textit{AddExpr} \;\rightarrow\; \textit{AddExpr}\;\texttt{+}\;\textit{MulExpr}
+  \;\mid\; \textit{AddExpr}\;\texttt{-}\;\textit{MulExpr}
+  \;\mid\; \textit{MulExpr}
+\]
+was transformed by introducing right-recursive tail non-terminals:
+\begin{align*}
+  \textit{AddExpr} &\rightarrow \textit{MulExpr}\;\textit{AddTail}\\
+  \textit{AddTail} &\rightarrow \texttt{+}\;\textit{MulExpr}\;\textit{AddTail}
+                      \;\mid\; \texttt{-}\;\textit{MulExpr}\;\textit{AddTail}
+                      \;\mid\; \varepsilon
+\end{align*}
+
+The same pattern applies to all binary operator chains in the expression hierarchy.
+
+% ------------------------------------------------------------------
+\section{Operator Precedence Table}
+% ------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{Level} & \textbf{Operator(s)} & \textbf{Assoc.} & \textbf{Grammar Rule} \\
+\midrule
+1 & \texttt{[]}\ \ \texttt{.}               & Left  & PostTail   \\
+2 & \texttt{!}\ \ unary \texttt{-}          & Right & UnaryExpr  \\
+3 & \texttt{*}\ \ \texttt{/}\ \ \texttt{\%} & Left  & MulTail    \\
+4 & \texttt{+}\ \ \texttt{-}                & Left  & AddTail    \\
+5 & \texttt{<}\ \ \texttt{<=}\ \ \texttt{>}\ \ \texttt{>=} & Left & RelTail \\
+6 & \texttt{==}\ \ \texttt{!=}              & Left  & EqTail     \\
+7 & \texttt{\&\&}                           & Left  & AndTail    \\
+8 & \texttt{||}                             & Left  & OrTail     \\
+9 & \texttt{=}                              & Right & AssignTail \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------------
+\section{LL(1) Conflict Analysis}
+% ------------------------------------------------------------------
+
+\subsection{Conflict 1 --- Stmt: VarDecl vs ExprStmt on \texttt{id}}
+
+When the lookahead is \texttt{id}, both \textit{VarDecl} (via
+\textit{Type} $\rightarrow$ \texttt{id} \textit{TypeSuffix}) and
+\textit{ExprStmt} (via \textit{Primary} $\rightarrow$ \texttt{id}
+\textit{CallTail}) are candidates. Resolution: a two-token lookahead.
+If \texttt{id} is followed by another \texttt{id}, it is a \textit{VarDecl};
+otherwise it is an expression statement.
+
+\subsection{Conflict 2 --- Dangling Else}
+
+The standard dangling-else ambiguity is resolved by preferring \textbf{shift}
+(binding \texttt{else} to the nearest enclosing \texttt{if}). This is implemented
+as a conflict-resolution rule in the SLR(1) table builder and as a greedy match
+in the recursive-descent parser.
+
+\subsection{Conflict 3 --- TypeSuffix on \texttt{[}}
+
+State 108 of the SLR(1) automaton encounters both a possible shift (new
+\texttt{TypeSuffix}) and a possible reduce. Resolved by reducing, since by
+that state the type-declaration context is complete.
+
+\subsection{Conflict 4 --- Shift/Reduce on \texttt{id} in State 1}
+
+Resolved by reducing, which correctly prioritises completing the pending
+\textit{DeclList} item before shifting a new \textit{Decl}.
+
+% ------------------------------------------------------------------
+\section{Complete Production Index}
+% ------------------------------------------------------------------
+
+\begin{longtable}{rp{11cm}}
+\toprule
+\textbf{\#} & \textbf{Production} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+0  & Program $\rightarrow$ DeclList \\
+1  & DeclList $\rightarrow$ Decl DeclList \\
+2  & DeclList $\rightarrow$ $\varepsilon$ \\
+3  & Decl $\rightarrow$ VarDecl \\
+4  & Decl $\rightarrow$ FuncDecl \\
+5  & Decl $\rightarrow$ ClassDecl \\
+6  & Decl $\rightarrow$ InterfaceDecl \\
+7  & VarDecl $\rightarrow$ Type \texttt{id} \texttt{;} \\
+8  & FuncDecl $\rightarrow$ RetType \texttt{id} \texttt{(} Formals \texttt{)} Block \\
+9  & RetType $\rightarrow$ Type \\
+10 & RetType $\rightarrow$ \texttt{void} \\
+11 & Type $\rightarrow$ \texttt{int} TypeSuffix \\
+12 & Type $\rightarrow$ \texttt{double} TypeSuffix \\
+13 & Type $\rightarrow$ \texttt{bool} TypeSuffix \\
+14 & Type $\rightarrow$ \texttt{string} TypeSuffix \\
+15 & Type $\rightarrow$ \texttt{id} TypeSuffix \\
+16 & TypeSuffix $\rightarrow$ \texttt{[} \texttt{]} TypeSuffix \\
+17 & TypeSuffix $\rightarrow$ $\varepsilon$ \\
+18 & Formals $\rightarrow$ ParamList \\
+19 & Formals $\rightarrow$ $\varepsilon$ \\
+20 & ParamList $\rightarrow$ Param ParamTail \\
+21 & ParamTail $\rightarrow$ \texttt{,} Param ParamTail \\
+22 & ParamTail $\rightarrow$ $\varepsilon$ \\
+23 & Param $\rightarrow$ Type \texttt{id} \\
+24 & ClassDecl $\rightarrow$ \texttt{class} \texttt{id} ClassBase ClassImpl \texttt{\{} FieldList \texttt{\}} \\
+25 & ClassBase $\rightarrow$ \texttt{extends} \texttt{id} \\
+26 & ClassBase $\rightarrow$ $\varepsilon$ \\
+27 & ClassImpl $\rightarrow$ \texttt{implements} IdentList \\
+28 & ClassImpl $\rightarrow$ $\varepsilon$ \\
+29 & IdentList $\rightarrow$ \texttt{id} IdentListTail \\
+30 & IdentListTail $\rightarrow$ \texttt{,} \texttt{id} IdentListTail \\
+31 & IdentListTail $\rightarrow$ $\varepsilon$ \\
+32 & FieldList $\rightarrow$ Field FieldList \\
+33 & FieldList $\rightarrow$ $\varepsilon$ \\
+34 & Field $\rightarrow$ VarDecl \\
+35 & Field $\rightarrow$ FuncDecl \\
+36 & InterfaceDecl $\rightarrow$ \texttt{interface} \texttt{id} \texttt{\{} ProtoList \texttt{\}} \\
+37 & ProtoList $\rightarrow$ Proto ProtoList \\
+38 & ProtoList $\rightarrow$ $\varepsilon$ \\
+39 & Proto $\rightarrow$ RetType \texttt{id} \texttt{(} Formals \texttt{)} \texttt{;} \\
+40 & Block $\rightarrow$ \texttt{\{} StmtList \texttt{\}} \\
+41 & StmtList $\rightarrow$ Stmt StmtList \\
+42 & StmtList $\rightarrow$ $\varepsilon$ \\
+43--51 & Stmt $\rightarrow$ VarDecl $\mid$ ExprStmt $\mid$ IfStmt $\mid$ WhileStmt $\mid$ ForStmt $\mid$ ReturnStmt $\mid$ BreakStmt $\mid$ PrintStmt $\mid$ Block \\
+52 & ExprStmt $\rightarrow$ Expr \texttt{;} \\
+53 & IfStmt $\rightarrow$ \texttt{if} \texttt{(} Expr \texttt{)} Stmt ElsePart \\
+54 & ElsePart $\rightarrow$ \texttt{else} Stmt \\
+55 & ElsePart $\rightarrow$ $\varepsilon$ \\
+56 & WhileStmt $\rightarrow$ \texttt{while} \texttt{(} Expr \texttt{)} Stmt \\
+57 & ForStmt $\rightarrow$ \texttt{for} \texttt{(} ForInit \texttt{;} Expr \texttt{;} ForUpdate \texttt{)} Stmt \\
+58 & ForInit $\rightarrow$ Expr \\
+59 & ForInit $\rightarrow$ $\varepsilon$ \\
+60 & ForUpdate $\rightarrow$ Expr \\
+61 & ForUpdate $\rightarrow$ $\varepsilon$ \\
+62 & ReturnStmt $\rightarrow$ \texttt{return} RetExprOpt \texttt{;} \\
+63 & RetExprOpt $\rightarrow$ Expr \\
+64 & RetExprOpt $\rightarrow$ $\varepsilon$ \\
+65 & BreakStmt $\rightarrow$ \texttt{break} \texttt{;} \\
+66 & PrintStmt $\rightarrow$ \texttt{Print} \texttt{(} ExprList \texttt{)} \texttt{;} \\
+67 & ExprList $\rightarrow$ Expr ExprListTail \\
+68 & ExprListTail $\rightarrow$ \texttt{,} Expr ExprListTail \\
+69 & ExprListTail $\rightarrow$ $\varepsilon$ \\
+70 & Expr $\rightarrow$ OrExpr AssignTail \\
+71 & AssignTail $\rightarrow$ \texttt{=} Expr \\
+72 & AssignTail $\rightarrow$ $\varepsilon$ \\
+73 & OrExpr $\rightarrow$ AndExpr OrTail \\
+74 & OrTail $\rightarrow$ \texttt{||} AndExpr OrTail \\
+75 & OrTail $\rightarrow$ $\varepsilon$ \\
+76 & AndExpr $\rightarrow$ EqExpr AndTail \\
+77 & AndTail $\rightarrow$ \texttt{\&\&} EqExpr AndTail \\
+78 & AndTail $\rightarrow$ $\varepsilon$ \\
+79 & EqExpr $\rightarrow$ RelExpr EqTail \\
+80 & EqTail $\rightarrow$ \texttt{==} RelExpr \\
+81 & EqTail $\rightarrow$ \texttt{!=} RelExpr \\
+82 & EqTail $\rightarrow$ $\varepsilon$ \\
+83 & RelExpr $\rightarrow$ AddExpr RelTail \\
+84--88 & RelTail $\rightarrow$ \texttt{<} AddExpr $\mid$ \texttt{<=} AddExpr $\mid$ \texttt{>} AddExpr $\mid$ \texttt{>=} AddExpr $\mid$ $\varepsilon$ \\
+89 & AddExpr $\rightarrow$ MulExpr AddTail \\
+90 & AddTail $\rightarrow$ \texttt{+} MulExpr AddTail \\
+91 & AddTail $\rightarrow$ \texttt{-} MulExpr AddTail \\
+92 & AddTail $\rightarrow$ $\varepsilon$ \\
+93 & MulExpr $\rightarrow$ UnaryExpr MulTail \\
+94 & MulTail $\rightarrow$ \texttt{*} UnaryExpr MulTail \\
+95 & MulTail $\rightarrow$ \texttt{/} UnaryExpr MulTail \\
+96 & MulTail $\rightarrow$ \texttt{\%} UnaryExpr MulTail \\
+97 & MulTail $\rightarrow$ $\varepsilon$ \\
+98 & UnaryExpr $\rightarrow$ \texttt{!} UnaryExpr \\
+99 & UnaryExpr $\rightarrow$ \texttt{-} UnaryExpr \\
+100 & UnaryExpr $\rightarrow$ PostExpr \\
+101 & PostExpr $\rightarrow$ Primary PostTail \\
+102 & PostTail $\rightarrow$ \texttt{[} Expr \texttt{]} PostTail \\
+103 & PostTail $\rightarrow$ \texttt{.} \texttt{id} CallTail PostTail \\
+104 & PostTail $\rightarrow$ $\varepsilon$ \\
+105 & CallTail $\rightarrow$ \texttt{(} ActualList \texttt{)} \\
+106 & CallTail $\rightarrow$ $\varepsilon$ \\
+107--118 & Primary productions (see text) \\
+119 & ActualList $\rightarrow$ Expr ExprListTail \\
+120 & ActualList $\rightarrow$ $\varepsilon$ \\
+\end{longtable}
+
+\end{document}

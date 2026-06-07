@@ -1,0 +1,184 @@
+RD PARSER OUTPUT -test/test3_complex.decaf
+============================================================
+
+AST:
+  [Program]  [L2]
+    [DeclList]
+      [FuncDecl] = 'factorial'  [L2]
+        [Type] = 'int'  [L2]
+          [BaseType] = 'int'
+          [TypeSuffix]
+        [id] = 'factorial'  [L2]
+        [Formals]
+          [ParamList]
+            [Param] = 'int'  [L2]
+              [Type] = 'int'  [L2]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'n'
+        [Block]  [L2]
+          [StmtList]
+            [IfStmt]  [L3]
+              [BinOp] = '<='  [L3]
+                [Var] = 'n'  [L3]
+                [IntLit] = 1  [L3]
+              [Block]  [L3]
+                [StmtList]
+                  [ReturnStmt]  [L4]
+                    [IntLit] = 1  [L4]
+              [ElsePart]
+            [ReturnStmt]  [L6]
+              [BinOp] = '*'  [L6]
+                [Var] = 'n'  [L6]
+                [Call] = 'factorial'  [L6]
+                  [ActualList]
+                    [BinOp] = '-'  [L6]
+                      [Var] = 'n'  [L6]
+                      [IntLit] = 1  [L6]
+      [FuncDecl] = 'sumArray'  [L9]
+        [Type] = 'int'  [L9]
+          [BaseType] = 'int'
+          [TypeSuffix]
+        [id] = 'sumArray'  [L9]
+        [Formals]
+          [ParamList]
+            [Param] = 'int[]'  [L9]
+              [Type] = 'int[]'  [L9]
+                [BaseType] = 'int'
+                [TypeSuffix] = '[]'  [L9]
+                  [TypeSuffix]
+              [id] = 'arr'
+            [Param] = 'int'  [L9]
+              [Type] = 'int'  [L9]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'n'
+        [Block]  [L9]
+          [StmtList]
+            [VarDecl] = 'sum'  [L10]
+              [Type] = 'int'  [L10]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'sum'  [L10]
+            [ExprStmt]  [L11]
+              [Assign] = '='  [L11]
+                [Var] = 'sum'  [L11]
+                [IntLit] = 0  [L11]
+            [VarDecl] = 'i'  [L12]
+              [Type] = 'int'  [L12]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'i'  [L12]
+            [ExprStmt]  [L13]
+              [Assign] = '='  [L13]
+                [Var] = 'i'  [L13]
+                [IntLit] = 0  [L13]
+            [WhileStmt]  [L14]
+              [BinOp] = '<'  [L14]
+                [Var] = 'i'  [L14]
+                [Var] = 'n'  [L14]
+              [Block]  [L14]
+                [StmtList]
+                  [ExprStmt]  [L15]
+                    [Assign] = '='  [L15]
+                      [Var] = 'sum'  [L15]
+                      [BinOp] = '+'  [L15]
+                        [Var] = 'sum'  [L15]
+                        [IndexOp] = '[]'  [L15]
+                          [Var] = 'arr'  [L15]
+                          [Var] = 'i'  [L15]
+                  [ExprStmt]  [L16]
+                    [Assign] = '='  [L16]
+                      [Var] = 'i'  [L16]
+                      [BinOp] = '+'  [L16]
+                        [Var] = 'i'  [L16]
+                        [IntLit] = 1  [L16]
+            [ReturnStmt]  [L18]
+              [Var] = 'sum'  [L18]
+      [FuncDecl] = 'main'  [L21]
+        [RetType] = 'void'  [L21]
+        [id] = 'main'  [L21]
+        [Formals]
+        [Block]  [L21]
+          [StmtList]
+            [VarDecl] = 'n'  [L22]
+              [Type] = 'int'  [L22]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'n'  [L22]
+            [ExprStmt]  [L23]
+              [Assign] = '='  [L23]
+                [Var] = 'n'  [L23]
+                [ReadInteger]  [L23]
+            [PrintStmt]  [L24]
+              [ExprList]
+                [Call] = 'factorial'  [L24]
+                  [ActualList]
+                    [Var] = 'n'  [L24]
+            [VarDecl] = 'arr'  [L26]
+              [Type] = 'int[]'  [L26]
+                [BaseType] = 'int'
+                [TypeSuffix] = '[]'  [L26]
+                  [TypeSuffix]
+              [id] = 'arr'  [L26]
+            [ExprStmt]  [L27]
+              [Assign] = '='  [L27]
+                [Var] = 'arr'  [L27]
+                [NewArray] = 'int'  [L27]
+                  [IntLit] = 5  [L27]
+                  [Type] = 'int'  [L27]
+                    [BaseType] = 'int'
+                    [TypeSuffix]
+            [VarDecl] = 'i'  [L28]
+              [Type] = 'int'  [L28]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'i'  [L28]
+            [ExprStmt]  [L29]
+              [Assign] = '='  [L29]
+                [Var] = 'i'  [L29]
+                [IntLit] = 0  [L29]
+            [WhileStmt]  [L30]
+              [BinOp] = '<'  [L30]
+                [Var] = 'i'  [L30]
+                [IntLit] = 5  [L30]
+              [Block]  [L30]
+                [StmtList]
+                  [ExprStmt]  [L31]
+                    [Assign] = '='  [L31]
+                      [IndexOp] = '[]'  [L31]
+                        [Var] = 'arr'  [L31]
+                        [Var] = 'i'  [L31]
+                      [BinOp] = '*'  [L31]
+                        [Var] = 'i'  [L31]
+                        [Var] = 'i'  [L31]
+                  [ExprStmt]  [L32]
+                    [Assign] = '='  [L32]
+                      [Var] = 'i'  [L32]
+                      [BinOp] = '+'  [L32]
+                        [Var] = 'i'  [L32]
+                        [IntLit] = 1  [L32]
+            [PrintStmt]  [L34]
+              [ExprList]
+                [Call] = 'sumArray'  [L34]
+                  [ActualList]
+                    [Var] = 'arr'  [L34]
+                    [IntLit] = 5  [L34]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  factorial            function     int                  2     
+  main                 function     void                 21    
+  sumArray             function     int                  9     
+
+  Total entries: 3
+============================================================
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------

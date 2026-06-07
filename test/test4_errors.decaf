@@ -1,0 +1,8 @@
+/* Test 4: Program with errors for error handler testing */
+void main() {
+    int x
+    x = "hello";
+    int y;
+    y = x + ;
+    Print(z);
+}

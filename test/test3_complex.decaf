@@ -1,0 +1,35 @@
+/* Test 3: Complex program with arrays and control flow */
+int factorial(int n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorial(n - 1);
+}
+
+int sumArray(int[] arr, int n) {
+    int sum;
+    sum = 0;
+    int i;
+    i = 0;
+    while (i < n) {
+        sum = sum + arr[i];
+        i = i + 1;
+    }
+    return sum;
+}
+
+void main() {
+    int n;
+    n = ReadInteger();
+    Print(factorial(n));
+
+    int[] arr;
+    arr = NewArray(5, int);
+    int i;
+    i = 0;
+    while (i < 5) {
+        arr[i] = i * i;
+        i = i + 1;
+    }
+    Print(sumArray(arr, 5));
+}

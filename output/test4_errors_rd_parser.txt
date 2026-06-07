@@ -1,0 +1,53 @@
+RD PARSER OUTPUT -test/test4_errors.decaf
+============================================================
+
+AST:
+  [Program]  [L2]
+    [DeclList]
+      [FuncDecl] = 'main'  [L2]
+        [RetType] = 'void'  [L2]
+        [id] = 'main'  [L2]
+        [Formals]
+        [Block]  [L2]
+          [StmtList]
+            [VarDecl] = 'x'  [L3]
+              [Type] = 'int'  [L3]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'x'  [L3]
+            [ExprStmt]  [L4]
+              [Assign] = '='  [L4]
+                [Var] = 'x'  [L4]
+                [StringLit] = 'hello'  [L4]
+            [VarDecl] = 'y'  [L5]
+              [Type] = 'int'  [L5]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'y'  [L5]
+            [ExprStmt]  [L6]
+              [Assign] = '='  [L6]
+                [Var] = 'y'  [L6]
+                [BinOp] = '+'  [L6]
+                  [Var] = 'x'  [L6]
+                  [ErrorExpr]  [L6]
+            [PrintStmt]  [L7]
+              [ExprList]
+                [Var] = 'z'  [L7]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  main                 function     void                 2     
+
+  Total entries: 1
+============================================================
+------------------------------------------------------------
+  ERRORS (2):
+    [SYNTAX] Line 4, Col 5: Expected SEMICOLON, got IDENTIFIER ('x'). Expected 'SEMICOLON', found 'IDENTIFIER'.
+    [SYNTAX] Line 6, Col 13: Unexpected token ';' in expression
+------------------------------------------------------------

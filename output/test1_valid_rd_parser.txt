@@ -1,0 +1,84 @@
+RD PARSER OUTPUT -test/test1_valid.decaf
+============================================================
+
+AST:
+  [Program]  [L2]
+    [DeclList]
+      [FuncDecl] = 'main'  [L2]
+        [RetType] = 'void'  [L2]
+        [id] = 'main'  [L2]
+        [Formals]
+        [Block]  [L2]
+          [StmtList]
+            [VarDecl] = 'x'  [L3]
+              [Type] = 'int'  [L3]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'x'  [L3]
+            [ExprStmt]  [L4]
+              [Assign] = '='  [L4]
+                [Var] = 'x'  [L4]
+                [IntLit] = 5  [L4]
+            [VarDecl] = 'y'  [L5]
+              [Type] = 'int'  [L5]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'y'  [L5]
+            [ExprStmt]  [L6]
+              [Assign] = '='  [L6]
+                [Var] = 'y'  [L6]
+                [IntLit] = 10  [L6]
+            [VarDecl] = 'z'  [L7]
+              [Type] = 'int'  [L7]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'z'  [L7]
+            [ExprStmt]  [L8]
+              [Assign] = '='  [L8]
+                [Var] = 'z'  [L8]
+                [BinOp] = '+'  [L8]
+                  [Var] = 'x'  [L8]
+                  [Var] = 'y'  [L8]
+            [PrintStmt]  [L9]
+              [ExprList]
+                [Var] = 'z'  [L9]
+      [FuncDecl] = 'add'  [L12]
+        [Type] = 'int'  [L12]
+          [BaseType] = 'int'
+          [TypeSuffix]
+        [id] = 'add'  [L12]
+        [Formals]
+          [ParamList]
+            [Param] = 'int'  [L12]
+              [Type] = 'int'  [L12]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'a'
+            [Param] = 'int'  [L12]
+              [Type] = 'int'  [L12]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'b'
+        [Block]  [L12]
+          [StmtList]
+            [ReturnStmt]  [L13]
+              [BinOp] = '+'  [L13]
+                [Var] = 'a'  [L13]
+                [Var] = 'b'  [L13]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  add                  function     int                  12    
+  main                 function     void                 2     
+
+  Total entries: 2
+============================================================
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------

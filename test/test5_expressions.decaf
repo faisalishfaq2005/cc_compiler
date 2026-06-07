@@ -1,0 +1,28 @@
+/* Test 5: Expression tests */
+bool isEven(int n) {
+    return (n % 2) == 0;
+}
+
+void main() {
+    int a;
+    a = 10;
+    int b;
+    b = 3;
+
+    bool result;
+    result = (a > b) && isEven(a);
+
+    if (result) {
+        Print(a / b);
+    } else {
+        Print(a % b);
+    }
+
+    int i;
+    i = 0;
+    for (i = 0; i < 10; i = i + 1) {
+        if (isEven(i)) {
+            Print(i);
+        }
+    }
+}

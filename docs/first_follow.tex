@@ -1,0 +1,267 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\hypersetup{colorlinks=true, linkcolor=blue}
+
+\lstdefinestyle{pseudo}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  columns=flexible,
+  mathescape=true,
+  escapeinside={(*}{*)},
+}
+
+\title{\textbf{FIRST and FOLLOW Sets}\\
+       \large Decaf Mini-Compiler\\
+       CS-471L Compiler Construction Lab --- UET Lahore, Spring 2026}
+\author{Compiler Project Team}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------
+\section{Introduction}
+% ------------------------------------------------------------------
+
+FIRST and FOLLOW sets are the mathematical foundation of LL(1) parsing.
+They are computed once from the grammar productions and serve three roles:
+
+\begin{enumerate}
+  \item \textbf{LL(1) table construction}: entry $M[A, a]$ is set to the
+        production $A \to \alpha$ whenever $a \in \text{FIRST}(\alpha)$,
+        or whenever $\varepsilon \in \text{FIRST}(\alpha)$ and
+        $a \in \text{FOLLOW}(A)$.
+  \item \textbf{Panic-mode error recovery}: after a syntax error, the parser
+        discards input tokens until it finds a token in the FOLLOW set of the
+        current non-terminal.
+  \item \textbf{SLR(1) reduce actions}: the parser reduces by $A \to \alpha$
+        in state $s$ only if the next input symbol belongs to $\text{FOLLOW}(A)$.
+\end{enumerate}
+
+% ------------------------------------------------------------------
+\section{Algorithm: FIRST Sets}
+% ------------------------------------------------------------------
+
+\begin{lstlisting}[style=pseudo]
+for each terminal $a$:   FIRST($a$) := {$a$}
+for each non-terminal $A$: FIRST($A$) := $\emptyset$
+
+repeat until no FIRST set changes:
+  for each production $A \to X_1 X_2 \cdots X_k$:
+    add FIRST($X_1$) \ {$\varepsilon$}  to  FIRST($A$)
+    for $i$ = 1 to $k-1$:
+      if $\varepsilon \in$ FIRST($X_1$) $\cap \cdots \cap$ FIRST($X_i$):
+        add FIRST($X_{i+1}$) \ {$\varepsilon$}  to  FIRST($A$)
+    if $\varepsilon \in$ FIRST($X_1$) $\cap \cdots \cap$ FIRST($X_k$):
+      add $\varepsilon$  to  FIRST($A$)
+  for each production $A \to \varepsilon$:
+    add $\varepsilon$  to  FIRST($A$)
+\end{lstlisting}
+
+\subsection{Worked Example: FIRST(AddExpr)}
+
+\begin{align*}
+  \textit{AddExpr} &\to \textit{MulExpr}\;\textit{AddTail}\\
+  \text{FIRST}(\textit{AddExpr}) &= \text{FIRST}(\textit{MulExpr}) \setminus \{\varepsilon\}
+    \quad (\textit{MulExpr} \text{ cannot derive } \varepsilon)\\
+  \textit{MulExpr} &\to \textit{UnaryExpr}\;\textit{MulTail}\\
+  \textit{UnaryExpr} &\to \texttt{!}\;\textit{UnaryExpr}
+                        \mid \texttt{-}\;\textit{UnaryExpr}
+                        \mid \textit{PostExpr}\\
+  \textit{PostExpr} &\to \textit{Primary}\;\textit{PostTail}\\
+  \text{FIRST}(\textit{Primary}) &= \{
+    \texttt{(},\; \text{BOOL\_CONST},\; \text{DOUBLE\_CONST},\; \text{INT\_CONST},\\
+    &\quad \texttt{New},\; \texttt{NewArray},\; \texttt{ReadInteger},\; \texttt{ReadLine},\\
+    &\quad \text{STRING\_CONST},\; \texttt{id},\; \texttt{null},\; \texttt{this}
+  \}
+\end{align*}
+
+Propagating upward:
+\[
+  \text{FIRST}(\textit{AddExpr}) = \{\texttt{!},\; \texttt{-}\}
+    \cup \text{FIRST}(\textit{Primary})
+\]
+
+% ------------------------------------------------------------------
+\section{Algorithm: FOLLOW Sets}
+% ------------------------------------------------------------------
+
+\begin{lstlisting}[style=pseudo]
+FOLLOW(Start) := {$}
+for all other non-terminals $A$: FOLLOW($A$) := $\emptyset$
+
+repeat until no FOLLOW set changes:
+  for each production $B \to \alpha\,A\,\beta$:
+    add FIRST($\beta$) \ {$\varepsilon$}   to   FOLLOW($A$)
+    if $\varepsilon \in$ FIRST($\beta$):
+      add FOLLOW($B$)   to   FOLLOW($A$)
+  for each production $B \to \alpha\,A$:
+    add FOLLOW($B$)   to   FOLLOW($A$)
+\end{lstlisting}
+
+\subsection{Worked Example: FOLLOW(OrExpr)}
+
+From the production \textit{Expr} $\to$ \textit{OrExpr} \textit{AssignTail}:
+\begin{align*}
+  \text{FIRST}(\textit{AssignTail}) &= \{\texttt{=},\, \varepsilon\}\\
+  \Rightarrow\quad \text{FOLLOW}(\textit{OrExpr}) &\supseteq \{\texttt{=}\}\\
+  \varepsilon \in \text{FIRST}(\textit{AssignTail}) &\Rightarrow
+    \text{FOLLOW}(\textit{OrExpr}) \supseteq \text{FOLLOW}(\textit{Expr})
+    = \{\texttt{)},\texttt{,},\texttt{;},\texttt{]}\}\\
+  \Rightarrow\quad \text{FOLLOW}(\textit{OrExpr}) &= \{=, ), {,}, {;}, ]\}
+\end{align*}
+
+% ------------------------------------------------------------------
+\section{Complete FIRST Sets}
+% ------------------------------------------------------------------
+
+\begin{longtable}{lp{10cm}}
+\toprule
+\textbf{Non-Terminal} & \textbf{FIRST Set} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Program        & bool, class, double, id, int, interface, string, void, $\varepsilon$ \\
+DeclList       & bool, class, double, id, int, interface, string, void, $\varepsilon$ \\
+Decl           & bool, class, double, id, int, interface, string, void \\
+VarDecl        & bool, double, id, int, string \\
+FuncDecl       & bool, double, id, int, string, void \\
+RetType        & bool, double, id, int, string, void \\
+Type           & bool, double, id, int, string \\
+TypeSuffix     & \texttt{[}, $\varepsilon$ \\
+Formals        & bool, double, id, int, string, $\varepsilon$ \\
+ParamList      & bool, double, id, int, string \\
+ParamTail      & \texttt{,}, $\varepsilon$ \\
+Param          & bool, double, id, int, string \\
+ClassDecl      & class \\
+ClassBase      & extends, $\varepsilon$ \\
+ClassImpl      & implements, $\varepsilon$ \\
+IdentList      & id \\
+IdentListTail  & \texttt{,}, $\varepsilon$ \\
+FieldList      & bool, double, id, int, string, void, $\varepsilon$ \\
+Field          & bool, double, id, int, string, void \\
+InterfaceDecl  & interface \\
+ProtoList      & bool, double, id, int, string, void, $\varepsilon$ \\
+Proto          & bool, double, id, int, string, void \\
+Block          & \texttt{\{} \\
+StmtList       & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING\_CONST, bool, break, double, for, id, if, int, null, return, string, this, while, \texttt{\{}, $\varepsilon$ \\
+Stmt           & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING\_CONST, bool, break, double, for, id, if, int, null, return, string, this, while, \texttt{\{} \\
+ExprStmt       & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this \\
+IfStmt         & if \\
+ElsePart       & else, $\varepsilon$ \\
+WhileStmt      & while \\
+ForStmt        & for \\
+ForInit        & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this, $\varepsilon$ \\
+ForUpdate      & same as ForInit \\
+ReturnStmt     & return \\
+RetExprOpt     & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this, $\varepsilon$ \\
+BreakStmt      & break \\
+PrintStmt      & Print \\
+ExprList       & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this \\
+ExprListTail   & \texttt{,}, $\varepsilon$ \\
+Expr           & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this \\
+AssignTail     & \texttt{=}, $\varepsilon$ \\
+OrExpr         & same as Expr \\
+OrTail         & \texttt{||}, $\varepsilon$ \\
+AndExpr        & same as Expr \\
+AndTail        & \texttt{\&\&}, $\varepsilon$ \\
+EqExpr         & same as Expr \\
+EqTail         & \texttt{!=}, \texttt{==}, $\varepsilon$ \\
+RelExpr        & same as Expr \\
+RelTail        & \texttt{<}, \texttt{<=}, \texttt{>}, \texttt{>=}, $\varepsilon$ \\
+AddExpr        & same as Expr \\
+AddTail        & \texttt{+}, \texttt{-}, $\varepsilon$ \\
+MulExpr        & same as Expr \\
+MulTail        & \texttt{\%}, \texttt{*}, \texttt{/}, $\varepsilon$ \\
+UnaryExpr      & same as Expr \\
+PostExpr       & \texttt{(}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this \\
+PostTail       & \texttt{.}, \texttt{[}, $\varepsilon$ \\
+CallTail       & \texttt{(}, $\varepsilon$ \\
+Primary        & same as PostExpr \\
+ActualList     & same as Expr (plus $\varepsilon$) \\
+\end{longtable}
+
+% ------------------------------------------------------------------
+\section{Complete FOLLOW Sets}
+% ------------------------------------------------------------------
+
+\begin{longtable}{lp{10cm}}
+\toprule
+\textbf{Non-Terminal} & \textbf{FOLLOW Set} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Program        & \$ \\
+DeclList       & \$ \\
+Decl           & \$, bool, class, double, id, int, interface, string, void \\
+VarDecl        & (full statement-start set), \$, \texttt{\}} \\
+FuncDecl       & \$, bool, class, double, id, int, interface, string, void, \texttt{\}} \\
+RetType        & id \\
+Type           & \texttt{)}, id \\
+TypeSuffix     & \texttt{)}, id \\
+Formals        & \texttt{)} \\
+ParamList      & \texttt{)} \\
+ParamTail      & \texttt{)} \\
+Param          & \texttt{)}, \texttt{,} \\
+ClassDecl      & \$, bool, class, double, id, int, interface, string, void \\
+ClassBase      & implements, \texttt{\{} \\
+ClassImpl      & \texttt{\{} \\
+IdentList      & \texttt{\{} \\
+IdentListTail  & \texttt{\{} \\
+FieldList      & \texttt{\}} \\
+Field          & bool, double, id, int, string, void, \texttt{\}} \\
+InterfaceDecl  & \$, bool, class, double, id, int, interface, string, void \\
+ProtoList      & \texttt{\}} \\
+Proto          & bool, double, id, int, string, void, \texttt{\}} \\
+Block          & (full statement-start set), \$, \texttt{\}} \\
+StmtList       & \texttt{\}} \\
+Stmt           & \texttt{!}, \texttt{(}, \texttt{-}, BOOL\_CONST, DOUBLE\_CONST, INT\_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING\_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, \texttt{\{}, \texttt{\}} \\
+ExprStmt       & same as FOLLOW(Stmt) \\
+IfStmt         & same as FOLLOW(Stmt) \\
+ElsePart       & same as FOLLOW(Stmt) \\
+WhileStmt      & same as FOLLOW(Stmt) \\
+ForStmt        & same as FOLLOW(Stmt) \\
+ReturnStmt     & same as FOLLOW(Stmt) \\
+RetExprOpt     & \texttt{;} \\
+BreakStmt      & same as FOLLOW(Stmt) \\
+PrintStmt      & same as FOLLOW(Stmt) \\
+ExprList       & \texttt{)} \\
+ExprListTail   & \texttt{)} \\
+Expr           & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{]} \\
+AssignTail     & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{]} \\
+OrExpr         & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]} \\
+OrTail         & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]} \\
+AndExpr        & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]}, \texttt{||} \\
+AndTail        & \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]}, \texttt{||} \\
+EqExpr         & \texttt{\&\&}, \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]}, \texttt{||} \\
+EqTail         & \texttt{\&\&}, \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{]}, \texttt{||} \\
+RelExpr        & \texttt{!=}, \texttt{\&\&}, \texttt{)}, \texttt{,}, \texttt{;}, \texttt{=}, \texttt{==}, \texttt{]}, \texttt{||} \\
+RelTail        & same as FOLLOW(RelExpr) \\
+AddExpr        & \texttt{!=}, \texttt{\&\&}, \texttt{)}, \texttt{,}, \texttt{;}, \texttt{<}, \texttt{<=}, \texttt{=}, \texttt{==}, \texttt{>}, \texttt{>=}, \texttt{]}, \texttt{||} \\
+AddTail        & same as FOLLOW(AddExpr) \\
+MulExpr        & \texttt{!=}, \texttt{\&\&}, \texttt{)}, \texttt{+}, \texttt{,}, \texttt{-}, \texttt{;}, \texttt{<}, \texttt{<=}, \texttt{=}, \texttt{==}, \texttt{>}, \texttt{>=}, \texttt{]}, \texttt{||} \\
+MulTail        & same as FOLLOW(MulExpr) \\
+UnaryExpr      & \texttt{!=}, \texttt{\%}, \texttt{\&\&}, \texttt{)}, \texttt{*}, \texttt{+}, \texttt{,}, \texttt{-}, \texttt{/}, \texttt{;}, \texttt{<}, \texttt{<=}, \texttt{=}, \texttt{==}, \texttt{>}, \texttt{>=}, \texttt{]}, \texttt{||} \\
+PostExpr       & same as FOLLOW(UnaryExpr) \\
+PostTail       & same as FOLLOW(UnaryExpr) \\
+CallTail       & \texttt{!=}, \texttt{\%}, \texttt{\&\&}, \texttt{)}, \texttt{*}, \texttt{+}, \texttt{,}, \texttt{-}, \texttt{.}, \texttt{/}, \texttt{;}, \texttt{<}, \texttt{<=}, \texttt{=}, \texttt{==}, \texttt{>}, \texttt{>=}, \texttt{[}, \texttt{]}, \texttt{||} \\
+Primary        & same as FOLLOW(CallTail) \\
+ActualList     & \texttt{)} \\
+\end{longtable}
+
+\end{document}

@@ -1,0 +1,14 @@
+/* Test 1: Basic Decaf program */
+void main() {
+    int x;
+    x = 5;
+    int y;
+    y = 10;
+    int z;
+    z = x + y;
+    Print(z);
+}
+
+int add(int a, int b) {
+    return a + b;
+}

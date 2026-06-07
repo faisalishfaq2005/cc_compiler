@@ -1,0 +1,134 @@
+RD PARSER OUTPUT -test/test5_expressions.decaf
+============================================================
+
+AST:
+  [Program]  [L2]
+    [DeclList]
+      [FuncDecl] = 'isEven'  [L2]
+        [Type] = 'bool'  [L2]
+          [BaseType] = 'bool'
+          [TypeSuffix]
+        [id] = 'isEven'  [L2]
+        [Formals]
+          [ParamList]
+            [Param] = 'int'  [L2]
+              [Type] = 'int'  [L2]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'n'
+        [Block]  [L2]
+          [StmtList]
+            [ReturnStmt]  [L3]
+              [BinOp] = '=='  [L3]
+                [Paren]  [L3]
+                  [BinOp] = '%'  [L3]
+                    [Var] = 'n'  [L3]
+                    [IntLit] = 2  [L3]
+                [IntLit] = 0  [L3]
+      [FuncDecl] = 'main'  [L6]
+        [RetType] = 'void'  [L6]
+        [id] = 'main'  [L6]
+        [Formals]
+        [Block]  [L6]
+          [StmtList]
+            [VarDecl] = 'a'  [L7]
+              [Type] = 'int'  [L7]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'a'  [L7]
+            [ExprStmt]  [L8]
+              [Assign] = '='  [L8]
+                [Var] = 'a'  [L8]
+                [IntLit] = 10  [L8]
+            [VarDecl] = 'b'  [L9]
+              [Type] = 'int'  [L9]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'b'  [L9]
+            [ExprStmt]  [L10]
+              [Assign] = '='  [L10]
+                [Var] = 'b'  [L10]
+                [IntLit] = 3  [L10]
+            [VarDecl] = 'result'  [L12]
+              [Type] = 'bool'  [L12]
+                [BaseType] = 'bool'
+                [TypeSuffix]
+              [id] = 'result'  [L12]
+            [ExprStmt]  [L13]
+              [Assign] = '='  [L13]
+                [Var] = 'result'  [L13]
+                [BinOp] = '&&'  [L13]
+                  [Paren]  [L13]
+                    [BinOp] = '>'  [L13]
+                      [Var] = 'a'  [L13]
+                      [Var] = 'b'  [L13]
+                  [Call] = 'isEven'  [L13]
+                    [ActualList]
+                      [Var] = 'a'  [L13]
+            [IfStmt]  [L15]
+              [Var] = 'result'  [L15]
+              [Block]  [L15]
+                [StmtList]
+                  [PrintStmt]  [L16]
+                    [ExprList]
+                      [BinOp] = '/'  [L16]
+                        [Var] = 'a'  [L16]
+                        [Var] = 'b'  [L16]
+              [ElsePart]
+                [Block]  [L17]
+                  [StmtList]
+                    [PrintStmt]  [L18]
+                      [ExprList]
+                        [BinOp] = '%'  [L18]
+                          [Var] = 'a'  [L18]
+                          [Var] = 'b'  [L18]
+            [VarDecl] = 'i'  [L21]
+              [Type] = 'int'  [L21]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'i'  [L21]
+            [ExprStmt]  [L22]
+              [Assign] = '='  [L22]
+                [Var] = 'i'  [L22]
+                [IntLit] = 0  [L22]
+            [ForStmt]  [L23]
+              [Assign] = '='  [L23]
+                [Var] = 'i'  [L23]
+                [IntLit] = 0  [L23]
+              [BinOp] = '<'  [L23]
+                [Var] = 'i'  [L23]
+                [IntLit] = 10  [L23]
+              [Assign] = '='  [L23]
+                [Var] = 'i'  [L23]
+                [BinOp] = '+'  [L23]
+                  [Var] = 'i'  [L23]
+                  [IntLit] = 1  [L23]
+              [Block]  [L23]
+                [StmtList]
+                  [IfStmt]  [L24]
+                    [Call] = 'isEven'  [L24]
+                      [ActualList]
+                        [Var] = 'i'  [L24]
+                    [Block]  [L24]
+                      [StmtList]
+                        [PrintStmt]  [L25]
+                          [ExprList]
+                            [Var] = 'i'  [L25]
+                    [ElsePart]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  isEven               function     bool                 2     
+  main                 function     void                 6     
+
+  Total entries: 2
+============================================================
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------

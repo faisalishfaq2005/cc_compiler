@@ -1,0 +1,421 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{parskip}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  columns=flexible,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=5pt,
+}
+
+\lstdefinestyle{decaf}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{blue!5},
+  columns=flexible,
+  keywordstyle=\color{blue}\bfseries,
+  morekeywords={class,interface,extends,implements,void,int,double,bool,string,
+                if,else,while,for,return,break,null,this,new,New,NewArray,
+                Print,ReadInteger,ReadLine,true,false},
+}
+
+\title{\textbf{Decaf Mini-Compiler}\\
+       \large CS-471L Compiler Construction Lab\\
+       University of Engineering \& Technology, Lahore\\
+       Spring 2026}
+\author{Compiler Project Team}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------
+\section{Introduction}
+% ------------------------------------------------------------------
+
+This project implements a front-end mini-compiler for the \textbf{Decaf}
+programming language -- a statically typed, object-oriented language designed
+specifically for compiler construction courses. Decaf borrows its syntax from
+Java but strips away generics, packages, and complex I/O, leaving a tractable
+yet expressive target language.
+
+The compiler is implemented in Python 3.10+ and comprises six cooperating
+modules as summarised in Table~\ref{tab:modules}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Module} & \textbf{File} & \textbf{Role} \\
+\midrule
+Lexical Analyzer  & \texttt{src/lexer.py}        & Double-buffered tokeniser \\
+Recursive Descent & \texttt{src/rd\_parser.py}   & Hand-coded LL parser; builds AST \\
+LL(1) Parser      & \texttt{src/ll\_parser.py}   & Table-driven predictive parser \\
+SLR(1) Parser     & \texttt{src/lr\_parser.py}   & Bottom-up shift-reduce parser \\
+Symbol Table      & \texttt{src/symbol\_table.py}& Scoped hash-based symbol store \\
+Error Handler     & \texttt{src/error\_handler.py}& Diagnostics and recovery \\
+\bottomrule
+\end{tabular}
+\caption{Compiler modules and their roles.}
+\label{tab:modules}
+\end{table}
+
+% ------------------------------------------------------------------
+\section{Language Overview: Decaf}
+% ------------------------------------------------------------------
+
+A Decaf program is a sequence of top-level declarations.
+
+\subsection{Type System}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Keyword} & \textbf{Meaning} \\
+\midrule
+\texttt{int}     & 32-bit signed integer \\
+\texttt{double}  & IEEE 754 double precision float \\
+\texttt{bool}    & Boolean (\texttt{true} / \texttt{false}) \\
+\texttt{string}  & Immutable character string \\
+\texttt{void}    & Return type for procedures \\
+\textit{ClassName} & Instance of a user-defined class \\
+\texttt{T[]}     & One-dimensional array of type T \\
+\bottomrule
+\end{tabular}
+\caption{Decaf type system.}
+\end{table}
+
+\subsection{Classes}
+
+\begin{lstlisting}[style=decaf]
+class Dog extends Animal implements Runnable {
+    string name;
+    void bark() { Print("Woof!"); }
+}
+\end{lstlisting}
+
+Classes support single inheritance (\texttt{extends}) and multiple interface
+implementation (\texttt{implements}).
+
+\subsection{Built-in Operations}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Operation} & \textbf{Return} & \textbf{Description} \\
+\midrule
+\texttt{Print(e, ...)}      & void    & Print expressions to stdout \\
+\texttt{ReadInteger()}      & int     & Read integer from stdin \\
+\texttt{ReadLine()}         & string  & Read line from stdin \\
+\texttt{New(T)}             & T       & Allocate new class instance \\
+\texttt{NewArray(n, T)}     & T[]     & Allocate array of n elements \\
+\bottomrule
+\end{tabular}
+\caption{Decaf built-in operations.}
+\end{table}
+
+% ------------------------------------------------------------------
+\section{Module 1: Lexical Analyzer}
+% ------------------------------------------------------------------
+
+\subsection{Double-Buffering}
+
+The \texttt{DoubleBuffer} class maintains two buffers of 512 characters each.
+When the forward pointer reaches the end of one buffer half, the other half is
+loaded from the source. This allows efficient character-at-a-time scanning with
+O(1) amortised cost per character, and guarantees that tokens spanning a buffer
+boundary are handled correctly.
+
+Key operations:
+\begin{itemize}
+  \item \texttt{next\_char()}: advance the forward pointer; return character.
+  \item \texttt{retract()}: move forward pointer back by one.
+  \item \texttt{peek()}: look ahead without advancing.
+  \item \texttt{start\_lexeme()} / \texttt{get\_lexeme()}: mark and retrieve the
+        current token text.
+\end{itemize}
+
+\subsection{Token Categories}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Category} & \textbf{Examples} & \textbf{Notes} \\
+\midrule
+Keywords  & \texttt{void}, \texttt{class}, \texttt{if} & 24 keywords total \\
+Identifiers & \texttt{myVar}, \texttt{Animal} & Max 31 characters \\
+Int literals & \texttt{42}, \texttt{0xFF} & Decimal and hexadecimal \\
+Double literals & \texttt{3.14}, \texttt{1.0e-5} & With optional exponent \\
+String literals & \texttt{"hello"} & Double-quoted \\
+Bool literals & \texttt{true}, \texttt{false} & Stored as \texttt{BOOL\_CONST} \\
+Operators & \texttt{+}, \texttt{!=}, \texttt{\&\&} & All two-char ops recognised \\
+\bottomrule
+\end{tabular}
+\caption{Lexer token categories.}
+\end{table}
+
+% ------------------------------------------------------------------
+\section{Module 2: Recursive Descent Parser}
+% ------------------------------------------------------------------
+
+The recursive descent parser (RDP) has one Python method per non-terminal.
+It builds a dict-based AST and populates the symbol table during parsing.
+
+\subsection{AST Node Structure}
+
+\begin{lstlisting}[style=code,language=Python]
+{
+    'type':     'FuncDecl',       # node type
+    'value':    'main',           # optional: name, operator, literal
+    'line':     2,                # source line
+    'children': [ret_node, ...]   # child nodes
+}
+\end{lstlisting}
+
+\subsection{Error Recovery}
+
+Panic-mode recovery is used at the statement level: on a syntax error, tokens
+are discarded until a token in the FOLLOW set of the current non-terminal is
+seen. This allows reporting multiple independent errors in one pass.
+
+% ------------------------------------------------------------------
+\section{Module 3: LL(1) Non-Recursive Predictive Parser}
+% ------------------------------------------------------------------
+
+The LL(1) parser uses an explicit stack and a precomputed parse table $M[A, a]$.
+
+\subsection{Parse Table Construction}
+
+For each production $A \to \alpha$:
+\begin{enumerate}
+  \item For each $t \in \text{FIRST}(\alpha) \setminus \{\varepsilon\}$:
+        $M[A, t] = (A \to \alpha)$.
+  \item If $\varepsilon \in \text{FIRST}(\alpha)$: for each $t \in \text{FOLLOW}(A)$:
+        $M[A, t] = (A \to \alpha)$.
+\end{enumerate}
+
+\subsection{Parsing Algorithm}
+
+\begin{lstlisting}[style=code,language=Python]
+stack = ['$', 'Program']
+token = lexer.next_token()
+while stack:
+    top = stack[-1]
+    sym = token.grammar_symbol()
+    if top == '$' and sym == '$':
+        break  # accept
+    elif top == sym:  # terminal match
+        stack.pop(); token = lexer.next_token()
+    elif top in table and sym in table[top]:
+        production = table[top][sym]
+        stack.pop()
+        for s in reversed(production.rhs):
+            if s != 'epsilon':
+                stack.append(s)
+    else:
+        error(); recover(FOLLOW[top])
+\end{lstlisting}
+
+% ------------------------------------------------------------------
+\section{Module 4: SLR(1) LR Parser}
+% ------------------------------------------------------------------
+
+The SLR(1) parser is a bottom-up, shift-reduce parser producing 229 states
+for the Decaf grammar.
+
+\subsection{LR(0) Item Construction}
+
+Closure and goto operations build the canonical LR(0) item collection. An LR(0)
+item $[A \to \alpha \bullet \beta]$ shows how far parsing has progressed through
+a production.
+
+\subsection{Conflict Resolution}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllll}
+\toprule
+\textbf{\#} & \textbf{State} & \textbf{Token} & \textbf{Type} & \textbf{Resolution} \\
+\midrule
+1 & 218 & \texttt{else} & S/R & Prefer shift (nearest if) \\
+2 & 108 & \texttt{[}   & S/R & Prefer reduce \\
+3 & 108 & \texttt{)}   & R/R & Use first production \\
+4 & 1   & \texttt{id}  & S/R & Prefer reduce \\
+\bottomrule
+\end{tabular}
+\caption{SLR(1) conflict resolutions.}
+\end{table}
+
+% ------------------------------------------------------------------
+\section{Module 5: Symbol Table Manager}
+% ------------------------------------------------------------------
+
+The symbol table uses a stack of Python dicts to implement nested lexical scoping.
+
+\subsection{Polynomial Rolling Hash}
+
+\[
+  h(s) = \sum_{i=0}^{|s|-1} \text{ord}(s[i]) \cdot 31^i \bmod 211
+\]
+
+The prime modulus 211 minimises hash clustering. Each symbol entry stores its
+hash value for educational display in the symbol table dump.
+
+\subsection{Scope Stack}
+
+\begin{itemize}
+  \item \texttt{scopes[0]}: global (functions, classes, interfaces)
+  \item \texttt{scopes[1]}: function parameters
+  \item \texttt{scopes[2]}: function body
+  \item \texttt{scopes[3+]}: nested block bodies
+\end{itemize}
+
+\texttt{lookup(name)} searches from innermost to outermost, implementing the
+standard lexical scoping rule.
+
+% ------------------------------------------------------------------
+\section{Module 6: Error Handler}
+% ------------------------------------------------------------------
+
+\subsection{Error Classification}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Kind} & \textbf{Raised By} & \textbf{Examples} \\
+\midrule
+LEXICAL  & Lexer      & Unexpected \texttt{@}, unterminated string \\
+SYNTAX   & All parsers& Expected \texttt{;}, found \texttt{\}} \\
+SEMANTIC & RD Parser  & Undefined identifier, duplicate declaration \\
+\bottomrule
+\end{tabular}
+\caption{Error classifications.}
+\end{table}
+
+\subsection{Panic-Mode Recovery}
+
+After a syntax error, input tokens are discarded until a token in the FOLLOW set
+of the offending non-terminal is seen. This allows parsing to continue and report
+multiple independent errors.
+
+% ------------------------------------------------------------------
+\section{Grammar Transformations}
+% ------------------------------------------------------------------
+
+\subsection{Left-Recursion Removal}
+
+Original Decaf uses left-recursive type rules and expression rules. For example:
+\begin{align*}
+  \textit{Type} &\to \textit{Type}\;\texttt{[]}  \quad\text{(original, left-recursive)}\\
+  \textit{Type} &\to \texttt{int}\;\textit{TypeSuffix}
+    \mid \ldots\quad\text{(after transformation)}\\
+  \textit{TypeSuffix} &\to \texttt{[]}\;\textit{TypeSuffix} \mid \varepsilon
+\end{align*}
+
+\subsection{Grammar Statistics}
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Property & Value \\
+\midrule
+Non-terminals           & 55 \\
+Productions             & 121 \\
+Terminals               & 40 \\
+LL(1) table cells (non-empty) & $\approx$400 \\
+SLR(1) states           & 229 \\
+SLR(1) conflicts (resolved) & 4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------------
+\section{Sample Programs}
+% ------------------------------------------------------------------
+
+\subsection{test1\_valid.decaf}
+
+\begin{lstlisting}[style=decaf]
+void main() {
+    int x;
+    x = 5;
+    int y;
+    y = 10;
+    int z;
+    z = x + y;
+    Print(z);
+}
+
+int add(int a, int b) {
+    return a + b;
+}
+\end{lstlisting}
+
+All three parsers accept this program. The RD parser builds a two-function AST;
+the symbol table records \texttt{main} and \texttt{add} at global scope with their
+local variables at scope level 1.
+
+\subsection{test2\_class.decaf}
+
+Tests class declaration, inheritance (\texttt{extends}), member functions, and
+\texttt{New()} object allocation. The symbol table correctly creates a class scope
+for each class body.
+
+% ------------------------------------------------------------------
+\section{Limitations and Future Work}
+% ------------------------------------------------------------------
+
+\textbf{Limitations:}
+\begin{itemize}
+  \item No semantic type checking (types recorded but not verified).
+  \item No code generation (front-end only).
+  \item Single-file compilation.
+\end{itemize}
+
+\textbf{Future work:}
+\begin{itemize}
+  \item Semantic analysis phase: type checking, overriding validation.
+  \item Intermediate code generation (three-address code or LLVM IR).
+  \item Optimisation passes: constant folding, dead code elimination.
+  \item Language server protocol (LSP) integration.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{References}
+% ------------------------------------------------------------------
+
+\begin{enumerate}
+  \item Aho, A.~V., Lam, M.~S., Sethi, R., \& Ullman, J.~D. (2006).
+        \textit{Compilers: Principles, Techniques, and Tools} (2nd~ed.).
+        Addison-Wesley.
+  \item Lam, M.~S. et~al. (2003). \textit{CS143 Decaf Language Specification}.
+        Stanford University.
+  \item Cooper, K.~D., \& Torczon, L. (2011).
+        \textit{Engineering a Compiler} (2nd~ed.). Morgan Kaufmann.
+  \item Python Software Foundation. \textit{Python 3 Documentation}.
+        \url{https://docs.python.org/3/}
+\end{enumerate}
+
+\end{document}

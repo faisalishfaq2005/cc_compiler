@@ -1,0 +1,1340 @@
+
+Decaf Mini Compiler
+  Source : test/test1_valid.decaf
+  Output : output/
+
+Building grammar (FIRST/FOLLOW sets)... done.
+
+======================================================================
+  FIRST SETS
+======================================================================
+  FIRST(ActualList          ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this, ε }
+  FIRST(AddExpr             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(AddTail             ) = { +, -, ε }
+  FIRST(AndExpr             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(AndTail             ) = { &&, ε }
+  FIRST(AssignTail          ) = { =, ε }
+  FIRST(Block               ) = { { }
+  FIRST(BreakStmt           ) = { break }
+  FIRST(CallTail            ) = { (, ε }
+  FIRST(ClassBase           ) = { extends, ε }
+  FIRST(ClassDecl           ) = { class }
+  FIRST(ClassImpl           ) = { implements, ε }
+  FIRST(Decl                ) = { bool, class, double, id, int, interface, string, void }
+  FIRST(DeclList            ) = { bool, class, double, id, int, interface, string, void, ε }
+  FIRST(DeclRest            ) = { (, ; }
+  FIRST(ElsePart            ) = { else, ε }
+  FIRST(EqExpr              ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(EqTail              ) = { !=, ==, ε }
+  FIRST(Expr                ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(ExprList            ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(ExprListTail        ) = { ,, ε }
+  FIRST(ExprStmt            ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(Field               ) = { bool, double, id, int, string, void }
+  FIRST(FieldList           ) = { bool, double, id, int, string, void, ε }
+  FIRST(FieldRest           ) = { (, ; }
+  FIRST(ForInit             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this, ε }
+  FIRST(ForStmt             ) = { for }
+  FIRST(ForUpdate           ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this, ε }
+  FIRST(Formals             ) = { bool, double, id, int, string, ε }
+  FIRST(FuncDecl            ) = { bool, double, id, int, string, void }
+  FIRST(IdentList           ) = { id }
+  FIRST(IdentListTail       ) = { ,, ε }
+  FIRST(IfStmt              ) = { if }
+  FIRST(InterfaceDecl       ) = { interface }
+  FIRST(MulExpr             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(MulTail             ) = { %, *, /, ε }
+  FIRST(OrExpr              ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(OrTail              ) = { ||, ε }
+  FIRST(Param               ) = { bool, double, id, int, string }
+  FIRST(ParamList           ) = { bool, double, id, int, string }
+  FIRST(ParamTail           ) = { ,, ε }
+  FIRST(PostExpr            ) = { (, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(PostTail            ) = { ., [, ε }
+  FIRST(Primary             ) = { (, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(PrintStmt           ) = { Print }
+  FIRST(Program             ) = { bool, class, double, id, int, interface, string, void, ε }
+  FIRST(Proto               ) = { bool, double, id, int, string, void }
+  FIRST(ProtoList           ) = { bool, double, id, int, string, void, ε }
+  FIRST(RelExpr             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(RelTail             ) = { <, <=, >, >=, ε }
+  FIRST(RetExprOpt          ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this, ε }
+  FIRST(RetType             ) = { bool, double, id, int, string, void }
+  FIRST(ReturnStmt          ) = { return }
+  FIRST(Stmt                ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, for, id, if, int, null, return, string, this, while, { }
+  FIRST(StmtList            ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, for, id, if, int, null, return, string, this, while, {, ε }
+  FIRST(Type                ) = { bool, double, id, int, string }
+  FIRST(TypeSuffix          ) = { [, ε }
+  FIRST(UnaryExpr           ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, ReadInteger, ReadLine, STRING_CONST, id, null, this }
+  FIRST(VarDecl             ) = { bool, double, id, int, string }
+  FIRST(WhileStmt           ) = { while }
+
+======================================================================
+  FOLLOW SETS
+======================================================================
+  FOLLOW(ActualList          ) = { ) }
+  FOLLOW(AddExpr             ) = { !=, &&, ), ,, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(AddTail             ) = { !=, &&, ), ,, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(AndExpr             ) = { ), ,, ;, =, ], || }
+  FOLLOW(AndTail             ) = { ), ,, ;, =, ], || }
+  FOLLOW(AssignTail          ) = { ), ,, ;, ] }
+  FOLLOW(Block               ) = { !, $, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, class, double, else, for, id, if, int, interface, null, return, string, this, void, while, {, } }
+  FOLLOW(BreakStmt           ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(CallTail            ) = { !=, %, &&, ), *, +, ,, -, ., /, ;, <, <=, =, ==, >, >=, [, ], || }
+  FOLLOW(ClassBase           ) = { implements, { }
+  FOLLOW(ClassDecl           ) = { $, bool, class, double, id, int, interface, string, void }
+  FOLLOW(ClassImpl           ) = { { }
+  FOLLOW(Decl                ) = { $, bool, class, double, id, int, interface, string, void }
+  FOLLOW(DeclList            ) = { $ }
+  FOLLOW(DeclRest            ) = { $, bool, class, double, id, int, interface, string, void }
+  FOLLOW(ElsePart            ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(EqExpr              ) = { &&, ), ,, ;, =, ], || }
+  FOLLOW(EqTail              ) = { &&, ), ,, ;, =, ], || }
+  FOLLOW(Expr                ) = { ), ,, ;, ] }
+  FOLLOW(ExprList            ) = { ) }
+  FOLLOW(ExprListTail        ) = { ) }
+  FOLLOW(ExprStmt            ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(Field               ) = { bool, double, id, int, string, void, } }
+  FOLLOW(FieldList           ) = { } }
+  FOLLOW(FieldRest           ) = { bool, double, id, int, string, void, } }
+  FOLLOW(ForInit             ) = { ; }
+  FOLLOW(ForStmt             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(ForUpdate           ) = { ) }
+  FOLLOW(Formals             ) = { ) }
+  FOLLOW(FuncDecl            ) = {  }
+  FOLLOW(IdentList           ) = { { }
+  FOLLOW(IdentListTail       ) = { { }
+  FOLLOW(IfStmt              ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(InterfaceDecl       ) = { $, bool, class, double, id, int, interface, string, void }
+  FOLLOW(MulExpr             ) = { !=, &&, ), +, ,, -, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(MulTail             ) = { !=, &&, ), +, ,, -, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(OrExpr              ) = { ), ,, ;, =, ] }
+  FOLLOW(OrTail              ) = { ), ,, ;, =, ] }
+  FOLLOW(Param               ) = { ), , }
+  FOLLOW(ParamList           ) = { ) }
+  FOLLOW(ParamTail           ) = { ) }
+  FOLLOW(PostExpr            ) = { !=, %, &&, ), *, +, ,, -, /, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(PostTail            ) = { !=, %, &&, ), *, +, ,, -, /, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(Primary             ) = { !=, %, &&, ), *, +, ,, -, ., /, ;, <, <=, =, ==, >, >=, [, ], || }
+  FOLLOW(PrintStmt           ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(Program             ) = { $ }
+  FOLLOW(Proto               ) = { bool, double, id, int, string, void, } }
+  FOLLOW(ProtoList           ) = { } }
+  FOLLOW(RelExpr             ) = { !=, &&, ), ,, ;, =, ==, ], || }
+  FOLLOW(RelTail             ) = { !=, &&, ), ,, ;, =, ==, ], || }
+  FOLLOW(RetExprOpt          ) = { ; }
+  FOLLOW(RetType             ) = { id }
+  FOLLOW(ReturnStmt          ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(Stmt                ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(StmtList            ) = { } }
+  FOLLOW(Type                ) = { ), id }
+  FOLLOW(TypeSuffix          ) = { ), id }
+  FOLLOW(UnaryExpr           ) = { !=, %, &&, ), *, +, ,, -, /, ;, <, <=, =, ==, >, >=, ], || }
+  FOLLOW(VarDecl             ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+  FOLLOW(WhileStmt           ) = { !, (, -, BOOL_CONST, DOUBLE_CONST, INT_CONST, New, NewArray, Print, ReadInteger, ReadLine, STRING_CONST, bool, break, double, else, for, id, if, int, null, return, string, this, while, {, } }
+
+============================================================
+LL(1) PARSE TABLE
+============================================================
+
+  ActualList:
+    [!] -> Expr ExprListTail
+    [(] -> Expr ExprListTail
+    [)] -> ε
+    [-] -> Expr ExprListTail
+    [BOOL_CONST] -> Expr ExprListTail
+    [DOUBLE_CONST] -> Expr ExprListTail
+    [INT_CONST] -> Expr ExprListTail
+    [New] -> Expr ExprListTail
+    [NewArray] -> Expr ExprListTail
+    [ReadInteger] -> Expr ExprListTail
+    [ReadLine] -> Expr ExprListTail
+    [STRING_CONST] -> Expr ExprListTail
+    [id] -> Expr ExprListTail
+    [null] -> Expr ExprListTail
+    [this] -> Expr ExprListTail
+
+  AddExpr:
+    [!] -> MulExpr AddTail
+    [(] -> MulExpr AddTail
+    [-] -> MulExpr AddTail
+    [BOOL_CONST] -> MulExpr AddTail
+    [DOUBLE_CONST] -> MulExpr AddTail
+    [INT_CONST] -> MulExpr AddTail
+    [New] -> MulExpr AddTail
+    [NewArray] -> MulExpr AddTail
+    [ReadInteger] -> MulExpr AddTail
+    [ReadLine] -> MulExpr AddTail
+    [STRING_CONST] -> MulExpr AddTail
+    [id] -> MulExpr AddTail
+    [null] -> MulExpr AddTail
+    [this] -> MulExpr AddTail
+
+  AddTail:
+    [!=] -> ε
+    [&&] -> ε
+    [)] -> ε
+    [+] -> + MulExpr AddTail
+    [,] -> ε
+    [-] -> - MulExpr AddTail
+    [;] -> ε
+    [<] -> ε
+    [<=] -> ε
+    [=] -> ε
+    [==] -> ε
+    [>] -> ε
+    [>=] -> ε
+    []] -> ε
+    [||] -> ε
+
+  AndExpr:
+    [!] -> EqExpr AndTail
+    [(] -> EqExpr AndTail
+    [-] -> EqExpr AndTail
+    [BOOL_CONST] -> EqExpr AndTail
+    [DOUBLE_CONST] -> EqExpr AndTail
+    [INT_CONST] -> EqExpr AndTail
+    [New] -> EqExpr AndTail
+    [NewArray] -> EqExpr AndTail
+    [ReadInteger] -> EqExpr AndTail
+    [ReadLine] -> EqExpr AndTail
+    [STRING_CONST] -> EqExpr AndTail
+    [id] -> EqExpr AndTail
+    [null] -> EqExpr AndTail
+    [this] -> EqExpr AndTail
+
+  AndTail:
+    [&&] -> && EqExpr AndTail
+    [)] -> ε
+    [,] -> ε
+    [;] -> ε
+    [=] -> ε
+    []] -> ε
+    [||] -> ε
+
+  AssignTail:
+    [)] -> ε
+    [,] -> ε
+    [;] -> ε
+    [=] -> = Expr
+    []] -> ε
+
+  Block:
+    [{] -> { StmtList }
+
+  BreakStmt:
+    [break] -> break ;
+
+  CallTail:
+    [!=] -> ε
+    [%] -> ε
+    [&&] -> ε
+    [(] -> ( ActualList )
+    [)] -> ε
+    [*] -> ε
+    [+] -> ε
+    [,] -> ε
+    [-] -> ε
+    [.] -> ε
+    [/] -> ε
+    [;] -> ε
+    [<] -> ε
+    [<=] -> ε
+    [=] -> ε
+    [==] -> ε
+    [>] -> ε
+    [>=] -> ε
+    [[] -> ε
+    []] -> ε
+    [||] -> ε
+
+  ClassBase:
+    [extends] -> extends id
+    [implements] -> ε
+    [{] -> ε
+
+  ClassDecl:
+    [class] -> class id ClassBase ClassImpl { FieldList }
+
+  ClassImpl:
+    [implements] -> implements IdentList
+    [{] -> ε
+
+  Decl:
+    [bool] -> Type id DeclRest
+    [class] -> ClassDecl
+    [double] -> Type id DeclRest
+    [id] -> Type id DeclRest
+    [int] -> Type id DeclRest
+    [interface] -> InterfaceDecl
+    [string] -> Type id DeclRest
+    [void] -> void id ( Formals ) Block
+
+  DeclList:
+    [$] -> ε
+    [bool] -> Decl DeclList
+    [class] -> Decl DeclList
+    [double] -> Decl DeclList
+    [id] -> Decl DeclList
+    [int] -> Decl DeclList
+    [interface] -> Decl DeclList
+    [string] -> Decl DeclList
+    [void] -> Decl DeclList
+
+  DeclRest:
+    [(] -> ( Formals ) Block
+    [;] -> ;
+
+  ElsePart:
+    [!] -> ε
+    [(] -> ε
+    [-] -> ε
+    [BOOL_CONST] -> ε
+    [DOUBLE_CONST] -> ε
+    [INT_CONST] -> ε
+    [New] -> ε
+    [NewArray] -> ε
+    [Print] -> ε
+    [ReadInteger] -> ε
+    [ReadLine] -> ε
+    [STRING_CONST] -> ε
+    [bool] -> ε
+    [break] -> ε
+    [double] -> ε
+    [else] -> else Stmt
+    [for] -> ε
+    [id] -> ε
+    [if] -> ε
+    [int] -> ε
+    [null] -> ε
+    [return] -> ε
+    [string] -> ε
+    [this] -> ε
+    [while] -> ε
+    [{] -> ε
+    [}] -> ε
+
+  EqExpr:
+    [!] -> RelExpr EqTail
+    [(] -> RelExpr EqTail
+    [-] -> RelExpr EqTail
+    [BOOL_CONST] -> RelExpr EqTail
+    [DOUBLE_CONST] -> RelExpr EqTail
+    [INT_CONST] -> RelExpr EqTail
+    [New] -> RelExpr EqTail
+    [NewArray] -> RelExpr EqTail
+    [ReadInteger] -> RelExpr EqTail
+    [ReadLine] -> RelExpr EqTail
+    [STRING_CONST] -> RelExpr EqTail
+    [id] -> RelExpr EqTail
+    [null] -> RelExpr EqTail
+    [this] -> RelExpr EqTail
+
+  EqTail:
+    [!=] -> != RelExpr
+    [&&] -> ε
+    [)] -> ε
+    [,] -> ε
+    [;] -> ε
+    [=] -> ε
+    [==] -> == RelExpr
+    []] -> ε
+    [||] -> ε
+
+  Expr:
+    [!] -> OrExpr AssignTail
+    [(] -> OrExpr AssignTail
+    [-] -> OrExpr AssignTail
+    [BOOL_CONST] -> OrExpr AssignTail
+    [DOUBLE_CONST] -> OrExpr AssignTail
+    [INT_CONST] -> OrExpr AssignTail
+    [New] -> OrExpr AssignTail
+    [NewArray] -> OrExpr AssignTail
+    [ReadInteger] -> OrExpr AssignTail
+    [ReadLine] -> OrExpr AssignTail
+    [STRING_CONST] -> OrExpr AssignTail
+    [id] -> OrExpr AssignTail
+    [null] -> OrExpr AssignTail
+    [this] -> OrExpr AssignTail
+
+  ExprList:
+    [!] -> Expr ExprListTail
+    [(] -> Expr ExprListTail
+    [-] -> Expr ExprListTail
+    [BOOL_CONST] -> Expr ExprListTail
+    [DOUBLE_CONST] -> Expr ExprListTail
+    [INT_CONST] -> Expr ExprListTail
+    [New] -> Expr ExprListTail
+    [NewArray] -> Expr ExprListTail
+    [ReadInteger] -> Expr ExprListTail
+    [ReadLine] -> Expr ExprListTail
+    [STRING_CONST] -> Expr ExprListTail
+    [id] -> Expr ExprListTail
+    [null] -> Expr ExprListTail
+    [this] -> Expr ExprListTail
+
+  ExprListTail:
+    [)] -> ε
+    [,] -> , Expr ExprListTail
+
+  ExprStmt:
+    [!] -> Expr ;
+    [(] -> Expr ;
+    [-] -> Expr ;
+    [BOOL_CONST] -> Expr ;
+    [DOUBLE_CONST] -> Expr ;
+    [INT_CONST] -> Expr ;
+    [New] -> Expr ;
+    [NewArray] -> Expr ;
+    [ReadInteger] -> Expr ;
+    [ReadLine] -> Expr ;
+    [STRING_CONST] -> Expr ;
+    [id] -> Expr ;
+    [null] -> Expr ;
+    [this] -> Expr ;
+
+  Field:
+    [bool] -> Type id FieldRest
+    [double] -> Type id FieldRest
+    [id] -> Type id FieldRest
+    [int] -> Type id FieldRest
+    [string] -> Type id FieldRest
+    [void] -> void id ( Formals ) Block
+
+  FieldList:
+    [bool] -> Field FieldList
+    [double] -> Field FieldList
+    [id] -> Field FieldList
+    [int] -> Field FieldList
+    [string] -> Field FieldList
+    [void] -> Field FieldList
+    [}] -> ε
+
+  FieldRest:
+    [(] -> ( Formals ) Block
+    [;] -> ;
+
+  ForInit:
+    [!] -> Expr
+    [(] -> Expr
+    [-] -> Expr
+    [;] -> ε
+    [BOOL_CONST] -> Expr
+    [DOUBLE_CONST] -> Expr
+    [INT_CONST] -> Expr
+    [New] -> Expr
+    [NewArray] -> Expr
+    [ReadInteger] -> Expr
+    [ReadLine] -> Expr
+    [STRING_CONST] -> Expr
+    [id] -> Expr
+    [null] -> Expr
+    [this] -> Expr
+
+  ForStmt:
+    [for] -> for ( ForInit ; Expr ; ForUpdate ) Stmt
+
+  ForUpdate:
+    [!] -> Expr
+    [(] -> Expr
+    [)] -> ε
+    [-] -> Expr
+    [BOOL_CONST] -> Expr
+    [DOUBLE_CONST] -> Expr
+    [INT_CONST] -> Expr
+    [New] -> Expr
+    [NewArray] -> Expr
+    [ReadInteger] -> Expr
+    [ReadLine] -> Expr
+    [STRING_CONST] -> Expr
+    [id] -> Expr
+    [null] -> Expr
+    [this] -> Expr
+
+  Formals:
+    [)] -> ε
+    [bool] -> ParamList
+    [double] -> ParamList
+    [id] -> ParamList
+    [int] -> ParamList
+    [string] -> ParamList
+
+  FuncDecl:
+    [bool] -> RetType id ( Formals ) Block
+    [double] -> RetType id ( Formals ) Block
+    [id] -> RetType id ( Formals ) Block
+    [int] -> RetType id ( Formals ) Block
+    [string] -> RetType id ( Formals ) Block
+    [void] -> RetType id ( Formals ) Block
+
+  IdentList:
+    [id] -> id IdentListTail
+
+  IdentListTail:
+    [,] -> , id IdentListTail
+    [{] -> ε
+
+  IfStmt:
+    [if] -> if ( Expr ) Stmt ElsePart
+
+  InterfaceDecl:
+    [interface] -> interface id { ProtoList }
+
+  MulExpr:
+    [!] -> UnaryExpr MulTail
+    [(] -> UnaryExpr MulTail
+    [-] -> UnaryExpr MulTail
+    [BOOL_CONST] -> UnaryExpr MulTail
+    [DOUBLE_CONST] -> UnaryExpr MulTail
+    [INT_CONST] -> UnaryExpr MulTail
+    [New] -> UnaryExpr MulTail
+    [NewArray] -> UnaryExpr MulTail
+    [ReadInteger] -> UnaryExpr MulTail
+    [ReadLine] -> UnaryExpr MulTail
+    [STRING_CONST] -> UnaryExpr MulTail
+    [id] -> UnaryExpr MulTail
+    [null] -> UnaryExpr MulTail
+    [this] -> UnaryExpr MulTail
+
+  MulTail:
+    [!=] -> ε
+    [%] -> % UnaryExpr MulTail
+    [&&] -> ε
+    [)] -> ε
+    [*] -> * UnaryExpr MulTail
+    [+] -> ε
+    [,] -> ε
+    [-] -> ε
+    [/] -> / UnaryExpr MulTail
+    [;] -> ε
+    [<] -> ε
+    [<=] -> ε
+    [=] -> ε
+    [==] -> ε
+    [>] -> ε
+    [>=] -> ε
+    []] -> ε
+    [||] -> ε
+
+  OrExpr:
+    [!] -> AndExpr OrTail
+    [(] -> AndExpr OrTail
+    [-] -> AndExpr OrTail
+    [BOOL_CONST] -> AndExpr OrTail
+    [DOUBLE_CONST] -> AndExpr OrTail
+    [INT_CONST] -> AndExpr OrTail
+    [New] -> AndExpr OrTail
+    [NewArray] -> AndExpr OrTail
+    [ReadInteger] -> AndExpr OrTail
+    [ReadLine] -> AndExpr OrTail
+    [STRING_CONST] -> AndExpr OrTail
+    [id] -> AndExpr OrTail
+    [null] -> AndExpr OrTail
+    [this] -> AndExpr OrTail
+
+  OrTail:
+    [)] -> ε
+    [,] -> ε
+    [;] -> ε
+    [=] -> ε
+    []] -> ε
+    [||] -> || AndExpr OrTail
+
+  Param:
+    [bool] -> Type id
+    [double] -> Type id
+    [id] -> Type id
+    [int] -> Type id
+    [string] -> Type id
+
+  ParamList:
+    [bool] -> Param ParamTail
+    [double] -> Param ParamTail
+    [id] -> Param ParamTail
+    [int] -> Param ParamTail
+    [string] -> Param ParamTail
+
+  ParamTail:
+    [)] -> ε
+    [,] -> , Param ParamTail
+
+  PostExpr:
+    [(] -> Primary PostTail
+    [BOOL_CONST] -> Primary PostTail
+    [DOUBLE_CONST] -> Primary PostTail
+    [INT_CONST] -> Primary PostTail
+    [New] -> Primary PostTail
+    [NewArray] -> Primary PostTail
+    [ReadInteger] -> Primary PostTail
+    [ReadLine] -> Primary PostTail
+    [STRING_CONST] -> Primary PostTail
+    [id] -> Primary PostTail
+    [null] -> Primary PostTail
+    [this] -> Primary PostTail
+
+  PostTail:
+    [!=] -> ε
+    [%] -> ε
+    [&&] -> ε
+    [)] -> ε
+    [*] -> ε
+    [+] -> ε
+    [,] -> ε
+    [-] -> ε
+    [.] -> . id CallTail PostTail
+    [/] -> ε
+    [;] -> ε
+    [<] -> ε
+    [<=] -> ε
+    [=] -> ε
+    [==] -> ε
+    [>] -> ε
+    [>=] -> ε
+    [[] -> [ Expr ] PostTail
+    []] -> ε
+    [||] -> ε
+
+  Primary:
+    [(] -> ( Expr )
+    [BOOL_CONST] -> BOOL_CONST
+    [DOUBLE_CONST] -> DOUBLE_CONST
+    [INT_CONST] -> INT_CONST
+    [New] -> New ( id )
+    [NewArray] -> NewArray ( Expr , Type )
+    [ReadInteger] -> ReadInteger ( )
+    [ReadLine] -> ReadLine ( )
+    [STRING_CONST] -> STRING_CONST
+    [id] -> id CallTail
+    [null] -> null
+    [this] -> this
+
+  PrintStmt:
+    [Print] -> Print ( ExprList ) ;
+
+  Program:
+    [$] -> DeclList
+    [bool] -> DeclList
+    [class] -> DeclList
+    [double] -> DeclList
+    [id] -> DeclList
+    [int] -> DeclList
+    [interface] -> DeclList
+    [string] -> DeclList
+    [void] -> DeclList
+
+  Proto:
+    [bool] -> RetType id ( Formals ) ;
+    [double] -> RetType id ( Formals ) ;
+    [id] -> RetType id ( Formals ) ;
+    [int] -> RetType id ( Formals ) ;
+    [string] -> RetType id ( Formals ) ;
+    [void] -> RetType id ( Formals ) ;
+
+  ProtoList:
+    [bool] -> Proto ProtoList
+    [double] -> Proto ProtoList
+    [id] -> Proto ProtoList
+    [int] -> Proto ProtoList
+    [string] -> Proto ProtoList
+    [void] -> Proto ProtoList
+    [}] -> ε
+
+  RelExpr:
+    [!] -> AddExpr RelTail
+    [(] -> AddExpr RelTail
+    [-] -> AddExpr RelTail
+    [BOOL_CONST] -> AddExpr RelTail
+    [DOUBLE_CONST] -> AddExpr RelTail
+    [INT_CONST] -> AddExpr RelTail
+    [New] -> AddExpr RelTail
+    [NewArray] -> AddExpr RelTail
+    [ReadInteger] -> AddExpr RelTail
+    [ReadLine] -> AddExpr RelTail
+    [STRING_CONST] -> AddExpr RelTail
+    [id] -> AddExpr RelTail
+    [null] -> AddExpr RelTail
+    [this] -> AddExpr RelTail
+
+  RelTail:
+    [!=] -> ε
+    [&&] -> ε
+    [)] -> ε
+    [,] -> ε
+    [;] -> ε
+    [<] -> < AddExpr
+    [<=] -> <= AddExpr
+    [=] -> ε
+    [==] -> ε
+    [>] -> > AddExpr
+    [>=] -> >= AddExpr
+    []] -> ε
+    [||] -> ε
+
+  RetExprOpt:
+    [!] -> Expr
+    [(] -> Expr
+    [-] -> Expr
+    [;] -> ε
+    [BOOL_CONST] -> Expr
+    [DOUBLE_CONST] -> Expr
+    [INT_CONST] -> Expr
+    [New] -> Expr
+    [NewArray] -> Expr
+    [ReadInteger] -> Expr
+    [ReadLine] -> Expr
+    [STRING_CONST] -> Expr
+    [id] -> Expr
+    [null] -> Expr
+    [this] -> Expr
+
+  RetType:
+    [bool] -> Type
+    [double] -> Type
+    [id] -> Type
+    [int] -> Type
+    [string] -> Type
+    [void] -> void
+
+  ReturnStmt:
+    [return] -> return RetExprOpt ;
+
+  Stmt:
+    [!] -> ExprStmt
+    [(] -> ExprStmt
+    [-] -> ExprStmt
+    [BOOL_CONST] -> ExprStmt
+    [DOUBLE_CONST] -> ExprStmt
+    [INT_CONST] -> ExprStmt
+    [New] -> ExprStmt
+    [NewArray] -> ExprStmt
+    [Print] -> PrintStmt
+    [ReadInteger] -> ExprStmt
+    [ReadLine] -> ExprStmt
+    [STRING_CONST] -> ExprStmt
+    [bool] -> VarDecl
+    [break] -> BreakStmt
+    [double] -> VarDecl
+    [for] -> ForStmt
+    [id] -> ExprStmt
+    [if] -> IfStmt
+    [int] -> VarDecl
+    [null] -> ExprStmt
+    [return] -> ReturnStmt
+    [string] -> VarDecl
+    [this] -> ExprStmt
+    [while] -> WhileStmt
+    [{] -> Block
+
+  StmtList:
+    [!] -> Stmt StmtList
+    [(] -> Stmt StmtList
+    [-] -> Stmt StmtList
+    [BOOL_CONST] -> Stmt StmtList
+    [DOUBLE_CONST] -> Stmt StmtList
+    [INT_CONST] -> Stmt StmtList
+    [New] -> Stmt StmtList
+    [NewArray] -> Stmt StmtList
+    [Print] -> Stmt StmtList
+    [ReadInteger] -> Stmt StmtList
+    [ReadLine] -> Stmt StmtList
+    [STRING_CONST] -> Stmt StmtList
+    [bool] -> Stmt StmtList
+    [break] -> Stmt StmtList
+    [double] -> Stmt StmtList
+    [for] -> Stmt StmtList
+    [id] -> Stmt StmtList
+    [if] -> Stmt StmtList
+    [int] -> Stmt StmtList
+    [null] -> Stmt StmtList
+    [return] -> Stmt StmtList
+    [string] -> Stmt StmtList
+    [this] -> Stmt StmtList
+    [while] -> Stmt StmtList
+    [{] -> Stmt StmtList
+    [}] -> ε
+
+  Type:
+    [bool] -> bool TypeSuffix
+    [double] -> double TypeSuffix
+    [id] -> id TypeSuffix
+    [int] -> int TypeSuffix
+    [string] -> string TypeSuffix
+
+  TypeSuffix:
+    [!=] -> ε
+    [%] -> ε
+    [&&] -> ε
+    [)] -> ε
+    [*] -> ε
+    [+] -> ε
+    [,] -> ε
+    [-] -> ε
+    [.] -> ε
+    [/] -> ε
+    [;] -> ε
+    [<] -> ε
+    [<=] -> ε
+    [=] -> ε
+    [==] -> ε
+    [>] -> ε
+    [>=] -> ε
+    [[] -> [ ] TypeSuffix
+    [id] -> ε
+    [{] -> ε
+    [||] -> ε
+    [}] -> ε
+
+  UnaryExpr:
+    [!] -> ! UnaryExpr
+    [(] -> PostExpr
+    [-] -> - UnaryExpr
+    [BOOL_CONST] -> PostExpr
+    [DOUBLE_CONST] -> PostExpr
+    [INT_CONST] -> PostExpr
+    [New] -> PostExpr
+    [NewArray] -> PostExpr
+    [ReadInteger] -> PostExpr
+    [ReadLine] -> PostExpr
+    [STRING_CONST] -> PostExpr
+    [id] -> PostExpr
+    [null] -> PostExpr
+    [this] -> PostExpr
+
+  VarDecl:
+    [bool] -> Type id ;
+    [double] -> Type id ;
+    [id] -> Type id ;
+    [int] -> Type id ;
+    [string] -> Type id ;
+
+  WhileStmt:
+    [while] -> while ( Expr ) Stmt
+
+  CONFLICTS (2):
+    (('Stmt', 'id'), ('VarDecl',), ('ExprStmt',), 48)
+    (('ElsePart', 'else'), ('else', 'Stmt'), (), 59)
+
+======================================================================
+  LEXER OUTPUT
+======================================================================
+  Token(KW_VOID, 'void', line=2, col=1)
+  Token(IDENTIFIER, 'main', line=2, col=6)
+  Token(LPAREN, '(', line=2, col=10)
+  Token(RPAREN, ')', line=2, col=11)
+  Token(LBRACE, '{', line=2, col=13)
+  Token(KW_INT, 'int', line=3, col=5)
+  Token(IDENTIFIER, 'x', line=3, col=9)
+  Token(SEMICOLON, ';', line=3, col=10)
+  Token(IDENTIFIER, 'x', line=4, col=5)
+  Token(ASSIGN, '=', line=4, col=7)
+  Token(INT_CONST, 5, line=4, col=9)
+  Token(SEMICOLON, ';', line=4, col=10)
+  Token(KW_INT, 'int', line=5, col=5)
+  Token(IDENTIFIER, 'y', line=5, col=9)
+  Token(SEMICOLON, ';', line=5, col=10)
+  Token(IDENTIFIER, 'y', line=6, col=5)
+  Token(ASSIGN, '=', line=6, col=7)
+  Token(INT_CONST, 10, line=6, col=9)
+  Token(SEMICOLON, ';', line=6, col=11)
+  Token(KW_INT, 'int', line=7, col=5)
+  Token(IDENTIFIER, 'z', line=7, col=9)
+  Token(SEMICOLON, ';', line=7, col=10)
+  Token(IDENTIFIER, 'z', line=8, col=5)
+  Token(ASSIGN, '=', line=8, col=7)
+  Token(IDENTIFIER, 'x', line=8, col=9)
+  Token(PLUS, '+', line=8, col=11)
+  Token(IDENTIFIER, 'y', line=8, col=13)
+  Token(SEMICOLON, ';', line=8, col=14)
+  Token(KW_PRINT, 'Print', line=9, col=5)
+  Token(LPAREN, '(', line=9, col=10)
+  Token(IDENTIFIER, 'z', line=9, col=11)
+  Token(RPAREN, ')', line=9, col=12)
+  Token(SEMICOLON, ';', line=9, col=13)
+  Token(RBRACE, '}', line=10, col=1)
+  Token(KW_INT, 'int', line=12, col=1)
+  Token(IDENTIFIER, 'add', line=12, col=5)
+  Token(LPAREN, '(', line=12, col=8)
+  Token(KW_INT, 'int', line=12, col=9)
+  Token(IDENTIFIER, 'a', line=12, col=13)
+  Token(COMMA, ',', line=12, col=14)
+  Token(KW_INT, 'int', line=12, col=16)
+  Token(IDENTIFIER, 'b', line=12, col=20)
+  Token(RPAREN, ')', line=12, col=21)
+  Token(LBRACE, '{', line=12, col=23)
+  Token(KW_RETURN, 'return', line=13, col=5)
+  Token(IDENTIFIER, 'a', line=13, col=12)
+  Token(PLUS, '+', line=13, col=14)
+  Token(IDENTIFIER, 'b', line=13, col=16)
+  Token(SEMICOLON, ';', line=13, col=17)
+  Token(RBRACE, '}', line=14, col=1)
+  Token(EOF, None, line=15, col=1)
+
+  [Lexer] 51 tokens. Output -> output\test1_valid_lexer.txt
+
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------
+
+======================================================================
+  RECURSIVE DESCENT PARSER
+======================================================================
+
+  AST (51 tokens processed):
+  [Program]  [L2]
+    [DeclList]
+      [FuncDecl] = 'main'  [L2]
+        [RetType] = 'void'  [L2]
+        [id] = 'main'  [L2]
+        [Formals]
+        [Block]  [L2]
+          [StmtList]
+            [VarDecl] = 'x'  [L3]
+              [Type] = 'int'  [L3]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'x'  [L3]
+            [ExprStmt]  [L4]
+              [Assign] = '='  [L4]
+                [Var] = 'x'  [L4]
+                [IntLit] = 5  [L4]
+            [VarDecl] = 'y'  [L5]
+              [Type] = 'int'  [L5]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'y'  [L5]
+            [ExprStmt]  [L6]
+              [Assign] = '='  [L6]
+                [Var] = 'y'  [L6]
+                [IntLit] = 10  [L6]
+            [VarDecl] = 'z'  [L7]
+              [Type] = 'int'  [L7]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'z'  [L7]
+            [ExprStmt]  [L8]
+              [Assign] = '='  [L8]
+                [Var] = 'z'  [L8]
+                [BinOp] = '+'  [L8]
+                  [Var] = 'x'  [L8]
+                  [Var] = 'y'  [L8]
+            [PrintStmt]  [L9]
+              [ExprList]
+                [Var] = 'z'  [L9]
+      [FuncDecl] = 'add'  [L12]
+        [Type] = 'int'  [L12]
+          [BaseType] = 'int'
+          [TypeSuffix]
+        [id] = 'add'  [L12]
+        [Formals]
+          [ParamList]
+            [Param] = 'int'  [L12]
+              [Type] = 'int'  [L12]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'a'
+            [Param] = 'int'  [L12]
+              [Type] = 'int'  [L12]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'b'
+        [Block]  [L12]
+          [StmtList]
+            [ReturnStmt]  [L13]
+              [BinOp] = '+'  [L13]
+                [Var] = 'a'  [L13]
+                [Var] = 'b'  [L13]
+
+============================================================
+  Symbol Table after RD Parse
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line   Hash  
+  -------------------- ------------ -------------------- ------ ------
+  add                  function     int                  12     201   
+    .return_type = int
+    .param_types = []
+  main                 function     void                 2      84    
+    .return_type = void
+    .param_types = []
+
+  Total entries: 2
+============================================================
+
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------
+
+  [RD Parser] Output -> output\test1_valid_rd_parser.txt
+
+======================================================================
+  LL(1) PARSER (Non-Recursive Predictive)
+======================================================================
+
+  Parse trace (274 steps, showing first 100):
+  Stack                                            Input                  Action
+  ------------------------------------------------ ---------------------- ------------------------------
+  $ Program                                        void('void')           Program -> DeclList
+  $ DeclList                                       void('void')           DeclList -> Decl DeclList
+  $ DeclList Decl                                  void('void')           Decl -> void id ( Formals ) Block
+  $ DeclList Block ) Formals ( id void             void('void')           match  'void'
+  $ DeclList Block ) Formals ( id                  id('main')             match  'id'
+  $ DeclList Block ) Formals (                     (('(')                 match  '('
+  $ DeclList Block ) Formals                       )(')')                 Formals -> ε
+  $ DeclList Block )                               )(')')                 match  ')'
+  $ DeclList Block                                 {('{')                 Block -> { StmtList }
+  $ DeclList } StmtList {                          {('{')                 match  '{'
+  $ DeclList } StmtList                            int('int')             StmtList -> Stmt StmtList
+  $ DeclList } StmtList Stmt                       int('int')             Stmt -> VarDecl
+  $ DeclList } StmtList VarDecl                    int('int')             VarDecl -> Type id ;
+  $ DeclList } StmtList ; id Type                  int('int')             Type -> int TypeSuffix
+  $ DeclList } StmtList ; id TypeSuffix int        int('int')             match  'int'
+  $ DeclList } StmtList ; id TypeSuffix            id('x')                TypeSuffix -> ε
+  $ DeclList } StmtList ; id                       id('x')                match  'id'
+  $ DeclList } StmtList ;                          ;(';')                 match  ';'
+  $ DeclList } StmtList                            id('x')                StmtList -> Stmt StmtList
+  $ DeclList } StmtList Stmt                       id('x')                Stmt -> ExprStmt
+  $ DeclList } StmtList ExprStmt                   id('x')                ExprStmt -> Expr ;
+  $ DeclList } StmtList ; Expr                     id('x')                Expr -> OrExpr AssignTail
+  $ DeclList } StmtList ; AssignTail OrExpr        id('x')                OrExpr -> AndExpr OrTail
+  $ DeclList } StmtList ; AssignTail OrTail AndExpr id('x')                AndExpr -> EqExpr AndTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('x')                EqExpr -> RelExpr EqTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('x')                RelExpr -> AddExpr RelTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('x')                AddExpr -> MulExpr AddTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('x')                MulExpr -> UnaryExpr MulTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('x')                UnaryExpr -> PostExpr
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('x')                PostExpr -> Primary PostTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('x')                Primary -> id CallTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('x')                match  'id'
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail =('=')                 CallTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail =('=')                 PostTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail =('=')                 MulTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail =('=')                 AddTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail =('=')                 RelTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail =('=')                 EqTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail =('=')                 AndTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail        =('=')                 OrTail -> ε
+  $ DeclList } StmtList ; AssignTail               =('=')                 AssignTail -> = Expr
+  $ DeclList } StmtList ; Expr =                   =('=')                 match  '='
+  $ DeclList } StmtList ; Expr                     INT_CONST(5)           Expr -> OrExpr AssignTail
+  $ DeclList } StmtList ; AssignTail OrExpr        INT_CONST(5)           OrExpr -> AndExpr OrTail
+  $ DeclList } StmtList ; AssignTail OrTail AndExpr INT_CONST(5)           AndExpr -> EqExpr AndTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr INT_CONST(5)           EqExpr -> RelExpr EqTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr INT_CONST(5)           RelExpr -> AddExpr RelTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr INT_CONST(5)           AddExpr -> MulExpr AddTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr INT_CONST(5)           MulExpr -> UnaryExpr MulTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr INT_CONST(5)           UnaryExpr -> PostExpr
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr INT_CONST(5)           PostExpr -> Primary PostTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary INT_CONST(5)           Primary -> INT_CONST
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail INT_CONST INT_CONST(5)           match  'INT_CONST'
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ;(';')                 PostTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail ;(';')                 MulTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail        ;(';')                 OrTail -> ε
+  $ DeclList } StmtList ; AssignTail               ;(';')                 AssignTail -> ε
+  $ DeclList } StmtList ;                          ;(';')                 match  ';'
+  $ DeclList } StmtList                            int('int')             StmtList -> Stmt StmtList
+  $ DeclList } StmtList Stmt                       int('int')             Stmt -> VarDecl
+  $ DeclList } StmtList VarDecl                    int('int')             VarDecl -> Type id ;
+  $ DeclList } StmtList ; id Type                  int('int')             Type -> int TypeSuffix
+  $ DeclList } StmtList ; id TypeSuffix int        int('int')             match  'int'
+  $ DeclList } StmtList ; id TypeSuffix            id('y')                TypeSuffix -> ε
+  $ DeclList } StmtList ; id                       id('y')                match  'id'
+  $ DeclList } StmtList ;                          ;(';')                 match  ';'
+  $ DeclList } StmtList                            id('y')                StmtList -> Stmt StmtList
+  $ DeclList } StmtList Stmt                       id('y')                Stmt -> ExprStmt
+  $ DeclList } StmtList ExprStmt                   id('y')                ExprStmt -> Expr ;
+  $ DeclList } StmtList ; Expr                     id('y')                Expr -> OrExpr AssignTail
+  $ DeclList } StmtList ; AssignTail OrExpr        id('y')                OrExpr -> AndExpr OrTail
+  $ DeclList } StmtList ; AssignTail OrTail AndExpr id('y')                AndExpr -> EqExpr AndTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('y')                EqExpr -> RelExpr EqTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('y')                RelExpr -> AddExpr RelTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('y')                AddExpr -> MulExpr AddTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('y')                MulExpr -> UnaryExpr MulTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('y')                UnaryExpr -> PostExpr
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('y')                PostExpr -> Primary PostTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('y')                Primary -> id CallTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('y')                match  'id'
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail =('=')                 CallTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail =('=')                 PostTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail =('=')                 MulTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail =('=')                 AddTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail =('=')                 RelTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail =('=')                 EqTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail AndTail =('=')                 AndTail -> ε
+  $ DeclList } StmtList ; AssignTail OrTail        =('=')                 OrTail -> ε
+  $ DeclList } StmtList ; AssignTail               =('=')                 AssignTail -> = Expr
+  $ DeclList } StmtList ; Expr =                   =('=')                 match  '='
+  $ DeclList } StmtList ; Expr                     INT_CONST(10)          Expr -> OrExpr AssignTail
+  $ DeclList } StmtList ; AssignTail OrExpr        INT_CONST(10)          OrExpr -> AndExpr OrTail
+  $ DeclList } StmtList ; AssignTail OrTail AndExpr INT_CONST(10)          AndExpr -> EqExpr AndTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr INT_CONST(10)          EqExpr -> RelExpr EqTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr INT_CONST(10)          RelExpr -> AddExpr RelTail
+  $ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr INT_CONST(10)          AddExpr -> MulExpr AddTail
+  ... (174 more steps -use --trace-limit N to show more)
+
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------
+
+  [LL Parser] 274 steps. Output -> output\test1_valid_ll_parser.txt
+
+======================================================================
+  SLR(1) PARSER (Bottom-Up)
+======================================================================
+  Building SLR(1) tables... done. (246 states, 3 conflicts)
+
+============================================================
+SLR(1) ACTION/GOTO TABLE
+============================================================
+  States: 246
+
+  State 0:
+    action[$] = ('reduce', 2)
+    action[bool] = ('shift', 8)
+    action[class] = ('shift', 14)
+    action[double] = ('shift', 10)
+    action[id] = ('shift', 12)
+    action[int] = ('shift', 4)
+    action[interface] = ('shift', 2)
+    action[string] = ('shift', 5)
+    action[void] = ('shift', 1)
+    goto[ClassDecl] = 7
+    goto[Decl] = 11
+    goto[DeclList] = 6
+    goto[InterfaceDecl] = 9
+    goto[Program] = 13
+    goto[Type] = 3
+
+  State 1:
+    action[id] = ('shift', 15)
+
+  State 2:
+    action[id] = ('shift', 16)
+
+  State 3:
+    action[id] = ('shift', 17)
+
+  State 4:
+    action[)] = ('reduce', 19)
+    action[[] = ('shift', 18)
+    action[id] = ('reduce', 19)
+    goto[TypeSuffix] = 19
+
+  State 5:
+    action[)] = ('reduce', 19)
+    action[[] = ('shift', 18)
+    action[id] = ('reduce', 19)
+    goto[TypeSuffix] = 20
+
+  State 6:
+    action[$] = ('reduce', 0)
+
+  State 7:
+    action[$] = ('reduce', 3)
+    action[bool] = ('reduce', 3)
+    action[class] = ('reduce', 3)
+    action[double] = ('reduce', 3)
+    action[id] = ('reduce', 3)
+    action[int] = ('reduce', 3)
+    action[interface] = ('reduce', 3)
+    action[string] = ('reduce', 3)
+    action[void] = ('reduce', 3)
+
+  State 8:
+    action[)] = ('reduce', 19)
+    action[[] = ('shift', 18)
+    action[id] = ('reduce', 19)
+    goto[TypeSuffix] = 21
+
+  State 9:
+    action[$] = ('reduce', 4)
+    action[bool] = ('reduce', 4)
+    action[class] = ('reduce', 4)
+    action[double] = ('reduce', 4)
+    action[id] = ('reduce', 4)
+    action[int] = ('reduce', 4)
+    action[interface] = ('reduce', 4)
+    action[string] = ('reduce', 4)
+    action[void] = ('reduce', 4)
+
+  State 10:
+    action[)] = ('reduce', 19)
+    action[[] = ('shift', 18)
+    action[id] = ('reduce', 19)
+    goto[TypeSuffix] = 22
+
+  State 11:
+    action[$] = ('reduce', 2)
+    action[bool] = ('shift', 8)
+    action[class] = ('shift', 14)
+    action[double] = ('shift', 10)
+    action[id] = ('shift', 12)
+    action[int] = ('shift', 4)
+    action[interface] = ('shift', 2)
+    action[string] = ('shift', 5)
+    action[void] = ('shift', 1)
+    goto[ClassDecl] = 7
+    goto[Decl] = 11
+    goto[DeclList] = 23
+    goto[InterfaceDecl] = 9
+    goto[Type] = 3
+
+  State 12:
+    action[)] = ('reduce', 19)
+    action[[] = ('shift', 18)
+    action[id] = ('reduce', 19)
+    goto[TypeSuffix] = 24
+
+  State 13:
+    action[$] = ('shift', 25)
+
+  State 14:
+    action[id] = ('shift', 26)
+
+  State 15:
+    action[(] = ('shift', 27)
+
+  State 16:
+    action[{] = ('shift', 28)
+
+  State 17:
+    action[(] = ('shift', 30)
+    action[;] = ('shift', 31)
+    goto[DeclRest] = 29
+
+  State 18:
+    action[]] = ('shift', 32)
+
+  State 19:
+    action[)] = ('reduce', 13)
+    action[id] = ('reduce', 13)
+
+  CONFLICTS (3):
+    Reduce-reduce conflict at state 104, sym ')'
+    Shift-reduce conflict at state 104, sym '[': keeping reduce over shift
+    Shift-reduce conflict at state 230, sym 'else': keeping shift over reduce 59
+
+  Conflicts (3):
+    Reduce-reduce conflict at state 104, sym ')'
+    Shift-reduce conflict at state 104, sym '[': keeping reduce over shift
+    Shift-reduce conflict at state 230, sym 'else': keeping shift over reduce 59
+
+  Parse trace (276 steps, showing first 100):
+  States                       Symbols                      Input              Action
+  ---------------------------- ---------------------------- ------------------ --------------------
+  [0]                          ['$']                        void('void')       ('shift', 1)
+  [0, 1]                       ['$', 'void']                id('main')         ('shift', 15)
+  [0, 1, 15]                   ['$', 'void', 'id']          (('(')             ('shift', 27)
+  [0, 1, 15, 27]               ['$', 'void', 'id', '(']     )(')')             ('reduce', 21)
+  [0, 1, 15, 27, 36]           ['$', 'void', 'id', '(', 'Formals'] )(')')             ('shift', 50)
+  [0, 1, 15, 27, 36, 50]       ['$', 'void', 'id', '(', 'Formals', ')'] {('{')             ('shift', 61)
+  [1, 15, 27, 36, 50, 61]      ['void', 'id', '(', 'Formals', ')', '{'] int('int')         ('shift', 4)
+  [15, 27, 36, 50, 61, 4]      ['id', '(', 'Formals', ')', '{', 'int'] id('x')            ('reduce', 19)
+  [27, 36, 50, 61, 4, 19]      ['(', 'Formals', ')', '{', 'int', 'TypeSuffix'] id('x')            ('reduce', 13)
+  [15, 27, 36, 50, 61, 86]     ['id', '(', 'Formals', ')', '{', 'Type'] id('x')            ('shift', 142)
+  [27, 36, 50, 61, 86, 142]    ['(', 'Formals', ')', '{', 'Type', 'id'] ;(';')             ('shift', 184)
+  [36, 50, 61, 86, 142, 184]   ['Formals', ')', '{', 'Type', 'id', ';'] id('x')            ('reduce', 9)
+  [15, 27, 36, 50, 61, 78]     ['id', '(', 'Formals', ')', '{', 'VarDecl'] id('x')            ('reduce', 47)
+  [15, 27, 36, 50, 61, 88]     ['id', '(', 'Formals', ')', '{', 'Stmt'] id('x')            ('shift', 104)
+  [27, 36, 50, 61, 88, 104]    ['(', 'Formals', ')', '{', 'Stmt', 'id'] =('=')             ('reduce', 110)
+  [36, 50, 61, 88, 104, 158]   ['Formals', ')', '{', 'Stmt', 'id', 'CallTail'] =('=')             ('reduce', 111)
+  [27, 36, 50, 61, 88, 79]     ['(', 'Formals', ')', '{', 'Stmt', 'Primary'] =('=')             ('reduce', 108)
+  [36, 50, 61, 88, 79, 131]    ['Formals', ')', '{', 'Stmt', 'Primary', 'PostTail'] =('=')             ('reduce', 105)
+  [27, 36, 50, 61, 88, 81]     ['(', 'Formals', ')', '{', 'Stmt', 'PostExpr'] =('=')             ('reduce', 104)
+  [27, 36, 50, 61, 88, 71]     ['(', 'Formals', ')', '{', 'Stmt', 'UnaryExpr'] =('=')             ('reduce', 101)
+  [36, 50, 61, 88, 71, 120]    ['Formals', ')', '{', 'Stmt', 'UnaryExpr', 'MulTail'] =('=')             ('reduce', 97)
+  [27, 36, 50, 61, 88, 85]     ['(', 'Formals', ')', '{', 'Stmt', 'MulExpr'] =('=')             ('reduce', 96)
+  [36, 50, 61, 88, 85, 141]    ['Formals', ')', '{', 'Stmt', 'MulExpr', 'AddTail'] =('=')             ('reduce', 93)
+  [27, 36, 50, 61, 88, 89]     ['(', 'Formals', ')', '{', 'Stmt', 'AddExpr'] =('=')             ('reduce', 92)
+  [36, 50, 61, 88, 89, 146]    ['Formals', ')', '{', 'Stmt', 'AddExpr', 'RelTail'] =('=')             ('reduce', 87)
+  [27, 36, 50, 61, 88, 73]     ['(', 'Formals', ')', '{', 'Stmt', 'RelExpr'] =('=')             ('reduce', 86)
+  [36, 50, 61, 88, 73, 124]    ['Formals', ')', '{', 'Stmt', 'RelExpr', 'EqTail'] =('=')             ('reduce', 83)
+  [27, 36, 50, 61, 88, 87]     ['(', 'Formals', ')', '{', 'Stmt', 'EqExpr'] =('=')             ('reduce', 82)
+  [36, 50, 61, 88, 87, 143]    ['Formals', ')', '{', 'Stmt', 'EqExpr', 'AndTail'] =('=')             ('reduce', 80)
+  [27, 36, 50, 61, 88, 108]    ['(', 'Formals', ')', '{', 'Stmt', 'AndExpr'] =('=')             ('reduce', 79)
+  [36, 50, 61, 88, 108, 160]   ['Formals', ')', '{', 'Stmt', 'AndExpr', 'OrTail'] =('=')             ('reduce', 77)
+  [27, 36, 50, 61, 88, 82]     ['(', 'Formals', ')', '{', 'Stmt', 'OrExpr'] =('=')             ('shift', 136)
+  [36, 50, 61, 88, 82, 136]    ['Formals', ')', '{', 'Stmt', 'OrExpr', '='] INT_CONST(5)       ('shift', 98)
+  [50, 61, 88, 82, 136, 98]    [')', '{', 'Stmt', 'OrExpr', '=', 'INT_CONST'] ;(';')             ('reduce', 112)
+  [50, 61, 88, 82, 136, 79]    [')', '{', 'Stmt', 'OrExpr', '=', 'Primary'] ;(';')             ('reduce', 108)
+  [61, 88, 82, 136, 79, 131]   ['{', 'Stmt', 'OrExpr', '=', 'Primary', 'PostTail'] ;(';')             ('reduce', 105)
+  [50, 61, 88, 82, 136, 81]    [')', '{', 'Stmt', 'OrExpr', '=', 'PostExpr'] ;(';')             ('reduce', 104)
+  [50, 61, 88, 82, 136, 71]    [')', '{', 'Stmt', 'OrExpr', '=', 'UnaryExpr'] ;(';')             ('reduce', 101)
+  [61, 88, 82, 136, 71, 120]   ['{', 'Stmt', 'OrExpr', '=', 'UnaryExpr', 'MulTail'] ;(';')             ('reduce', 97)
+  [50, 61, 88, 82, 136, 85]    [')', '{', 'Stmt', 'OrExpr', '=', 'MulExpr'] ;(';')             ('reduce', 96)
+  [61, 88, 82, 136, 85, 141]   ['{', 'Stmt', 'OrExpr', '=', 'MulExpr', 'AddTail'] ;(';')             ('reduce', 93)
+  [50, 61, 88, 82, 136, 89]    [')', '{', 'Stmt', 'OrExpr', '=', 'AddExpr'] ;(';')             ('reduce', 92)
+  [61, 88, 82, 136, 89, 146]   ['{', 'Stmt', 'OrExpr', '=', 'AddExpr', 'RelTail'] ;(';')             ('reduce', 87)
+  [50, 61, 88, 82, 136, 73]    [')', '{', 'Stmt', 'OrExpr', '=', 'RelExpr'] ;(';')             ('reduce', 86)
+  [61, 88, 82, 136, 73, 124]   ['{', 'Stmt', 'OrExpr', '=', 'RelExpr', 'EqTail'] ;(';')             ('reduce', 83)
+  [50, 61, 88, 82, 136, 87]    [')', '{', 'Stmt', 'OrExpr', '=', 'EqExpr'] ;(';')             ('reduce', 82)
+  [61, 88, 82, 136, 87, 143]   ['{', 'Stmt', 'OrExpr', '=', 'EqExpr', 'AndTail'] ;(';')             ('reduce', 80)
+  [50, 61, 88, 82, 136, 108]   [')', '{', 'Stmt', 'OrExpr', '=', 'AndExpr'] ;(';')             ('reduce', 79)
+  [61, 88, 82, 136, 108, 160]  ['{', 'Stmt', 'OrExpr', '=', 'AndExpr', 'OrTail'] ;(';')             ('reduce', 77)
+  [50, 61, 88, 82, 136, 82]    [')', '{', 'Stmt', 'OrExpr', '=', 'OrExpr'] ;(';')             ('reduce', 76)
+  [61, 88, 82, 136, 82, 135]   ['{', 'Stmt', 'OrExpr', '=', 'OrExpr', 'AssignTail'] ;(';')             ('reduce', 74)
+  [50, 61, 88, 82, 136, 180]   [')', '{', 'Stmt', 'OrExpr', '=', 'Expr'] ;(';')             ('reduce', 75)
+  [36, 50, 61, 88, 82, 135]    ['Formals', ')', '{', 'Stmt', 'OrExpr', 'AssignTail'] ;(';')             ('reduce', 74)
+  [27, 36, 50, 61, 88, 74]     ['(', 'Formals', ')', '{', 'Stmt', 'Expr'] ;(';')             ('shift', 127)
+  [36, 50, 61, 88, 74, 127]    ['Formals', ')', '{', 'Stmt', 'Expr', ';'] int('int')         ('reduce', 56)
+  [27, 36, 50, 61, 88, 100]    ['(', 'Formals', ')', '{', 'Stmt', 'ExprStmt'] int('int')         ('reduce', 48)
+  [27, 36, 50, 61, 88, 88]     ['(', 'Formals', ')', '{', 'Stmt', 'Stmt'] int('int')         ('shift', 4)
+  [36, 50, 61, 88, 88, 4]      ['Formals', ')', '{', 'Stmt', 'Stmt', 'int'] id('y')            ('reduce', 19)
+  [50, 61, 88, 88, 4, 19]      [')', '{', 'Stmt', 'Stmt', 'int', 'TypeSuffix'] id('y')            ('reduce', 13)
+  [36, 50, 61, 88, 88, 86]     ['Formals', ')', '{', 'Stmt', 'Stmt', 'Type'] id('y')            ('shift', 142)
+  [50, 61, 88, 88, 86, 142]    [')', '{', 'Stmt', 'Stmt', 'Type', 'id'] ;(';')             ('shift', 184)
+  [61, 88, 88, 86, 142, 184]   ['{', 'Stmt', 'Stmt', 'Type', 'id', ';'] id('y')            ('reduce', 9)
+  [36, 50, 61, 88, 88, 78]     ['Formals', ')', '{', 'Stmt', 'Stmt', 'VarDecl'] id('y')            ('reduce', 47)
+  [36, 50, 61, 88, 88, 88]     ['Formals', ')', '{', 'Stmt', 'Stmt', 'Stmt'] id('y')            ('shift', 104)
+  [50, 61, 88, 88, 88, 104]    [')', '{', 'Stmt', 'Stmt', 'Stmt', 'id'] =('=')             ('reduce', 110)
+  [61, 88, 88, 88, 104, 158]   ['{', 'Stmt', 'Stmt', 'Stmt', 'id', 'CallTail'] =('=')             ('reduce', 111)
+  [50, 61, 88, 88, 88, 79]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'Primary'] =('=')             ('reduce', 108)
+  [61, 88, 88, 88, 79, 131]    ['{', 'Stmt', 'Stmt', 'Stmt', 'Primary', 'PostTail'] =('=')             ('reduce', 105)
+  [50, 61, 88, 88, 88, 81]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'PostExpr'] =('=')             ('reduce', 104)
+  [50, 61, 88, 88, 88, 71]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'UnaryExpr'] =('=')             ('reduce', 101)
+  [61, 88, 88, 88, 71, 120]    ['{', 'Stmt', 'Stmt', 'Stmt', 'UnaryExpr', 'MulTail'] =('=')             ('reduce', 97)
+  [50, 61, 88, 88, 88, 85]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'MulExpr'] =('=')             ('reduce', 96)
+  [61, 88, 88, 88, 85, 141]    ['{', 'Stmt', 'Stmt', 'Stmt', 'MulExpr', 'AddTail'] =('=')             ('reduce', 93)
+  [50, 61, 88, 88, 88, 89]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'AddExpr'] =('=')             ('reduce', 92)
+  [61, 88, 88, 88, 89, 146]    ['{', 'Stmt', 'Stmt', 'Stmt', 'AddExpr', 'RelTail'] =('=')             ('reduce', 87)
+  [50, 61, 88, 88, 88, 73]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'RelExpr'] =('=')             ('reduce', 86)
+  [61, 88, 88, 88, 73, 124]    ['{', 'Stmt', 'Stmt', 'Stmt', 'RelExpr', 'EqTail'] =('=')             ('reduce', 83)
+  [50, 61, 88, 88, 88, 87]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'EqExpr'] =('=')             ('reduce', 82)
+  [61, 88, 88, 88, 87, 143]    ['{', 'Stmt', 'Stmt', 'Stmt', 'EqExpr', 'AndTail'] =('=')             ('reduce', 80)
+  [50, 61, 88, 88, 88, 108]    [')', '{', 'Stmt', 'Stmt', 'Stmt', 'AndExpr'] =('=')             ('reduce', 79)
+  [61, 88, 88, 88, 108, 160]   ['{', 'Stmt', 'Stmt', 'Stmt', 'AndExpr', 'OrTail'] =('=')             ('reduce', 77)
+  [50, 61, 88, 88, 88, 82]     [')', '{', 'Stmt', 'Stmt', 'Stmt', 'OrExpr'] =('=')             ('shift', 136)
+  [61, 88, 88, 88, 82, 136]    ['{', 'Stmt', 'Stmt', 'Stmt', 'OrExpr', '='] INT_CONST(10)      ('shift', 98)
+  [88, 88, 88, 82, 136, 98]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'INT_CONST'] ;(';')             ('reduce', 112)
+  [88, 88, 88, 82, 136, 79]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'Primary'] ;(';')             ('reduce', 108)
+  [88, 88, 82, 136, 79, 131]   ['Stmt', 'Stmt', 'OrExpr', '=', 'Primary', 'PostTail'] ;(';')             ('reduce', 105)
+  [88, 88, 88, 82, 136, 81]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'PostExpr'] ;(';')             ('reduce', 104)
+  [88, 88, 88, 82, 136, 71]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'UnaryExpr'] ;(';')             ('reduce', 101)
+  [88, 88, 82, 136, 71, 120]   ['Stmt', 'Stmt', 'OrExpr', '=', 'UnaryExpr', 'MulTail'] ;(';')             ('reduce', 97)
+  [88, 88, 88, 82, 136, 85]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'MulExpr'] ;(';')             ('reduce', 96)
+  [88, 88, 82, 136, 85, 141]   ['Stmt', 'Stmt', 'OrExpr', '=', 'MulExpr', 'AddTail'] ;(';')             ('reduce', 93)
+  [88, 88, 88, 82, 136, 89]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'AddExpr'] ;(';')             ('reduce', 92)
+  [88, 88, 82, 136, 89, 146]   ['Stmt', 'Stmt', 'OrExpr', '=', 'AddExpr', 'RelTail'] ;(';')             ('reduce', 87)
+  [88, 88, 88, 82, 136, 73]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'RelExpr'] ;(';')             ('reduce', 86)
+  [88, 88, 82, 136, 73, 124]   ['Stmt', 'Stmt', 'OrExpr', '=', 'RelExpr', 'EqTail'] ;(';')             ('reduce', 83)
+  [88, 88, 88, 82, 136, 87]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'EqExpr'] ;(';')             ('reduce', 82)
+  [88, 88, 82, 136, 87, 143]   ['Stmt', 'Stmt', 'OrExpr', '=', 'EqExpr', 'AndTail'] ;(';')             ('reduce', 80)
+  [88, 88, 88, 82, 136, 108]   ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'AndExpr'] ;(';')             ('reduce', 79)
+  [88, 88, 82, 136, 108, 160]  ['Stmt', 'Stmt', 'OrExpr', '=', 'AndExpr', 'OrTail'] ;(';')             ('reduce', 77)
+  [88, 88, 88, 82, 136, 82]    ['Stmt', 'Stmt', 'Stmt', 'OrExpr', '=', 'OrExpr'] ;(';')             ('reduce', 76)
+  ... (176 more steps)
+
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------
+
+  [LR Parser] 276 steps. Output -> output\test1_valid_lr_parser.txt
+
+======================================================================
+  Compilation finished.
+======================================================================

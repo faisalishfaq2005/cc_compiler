@@ -1,0 +1,262 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\hypersetup{colorlinks=true, linkcolor=blue}
+
+\lstdefinestyle{pseudo}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  columns=flexible,
+  mathescape=true,
+}
+
+\title{\textbf{SLR(1) Parse Table}\\
+       \large Decaf Mini-Compiler\\
+       CS-471L Compiler Construction Lab --- UET Lahore, Spring 2026}
+\author{Compiler Project Team}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------
+\section{Algorithm Choice: SLR(1)}
+% ------------------------------------------------------------------
+
+We chose SLR(1) for the following reasons:
+
+\begin{enumerate}
+  \item \textbf{More powerful than LR(0)}: FOLLOW sets restrict reduce actions,
+        eliminating spurious conflicts.
+  \item \textbf{Simpler than LALR(1)/LR(1)}: no lookahead propagation is needed
+        through item sets.
+  \item \textbf{Compatible with the Decaf grammar}: with four explicit conflict
+        resolutions, the grammar is SLR(1)-parseable.
+  \item \textbf{Reuses FOLLOW sets}: already computed for the LL(1) analysis.
+\end{enumerate}
+
+The Decaf SLR(1) automaton has \textbf{229 states} and \textbf{4 resolved
+conflicts}.
+
+% ------------------------------------------------------------------
+\section{Bottom-Up Parsing Concepts}
+% ------------------------------------------------------------------
+
+\subsection{LR(0) Items}
+
+An LR(0) item is a production with a dot marker:
+\[
+  [A \to \alpha \bullet \beta]
+\]
+The dot shows how much of the right-hand side has been matched.
+The dot advances on each shift or goto action.
+
+\subsection{Closure}
+
+\begin{lstlisting}[style=pseudo]
+closure(I):
+  result = I
+  for each [A -> $\alpha$ . B $\beta$] in result:
+    for each production B -> $\gamma$:
+      add [B -> . $\gamma$] to result
+  return result
+\end{lstlisting}
+
+\subsection{Goto}
+
+\begin{lstlisting}[style=pseudo]
+goto(I, X):
+  moved = { [A -> $\alpha$ X . $\beta$] : [A -> $\alpha$ . X $\beta$] in I }
+  return closure(moved)
+\end{lstlisting}
+
+\subsection{SLR(1) Table Construction}
+
+\begin{lstlisting}[style=pseudo]
+for each state $s$ and each item in state $s$:
+
+  [A -> $\alpha$ . a $\beta$]  (a is a terminal):
+    action[$s$, $a$] = shift goto($s$, $a$)
+
+  [A -> $\alpha$ . B $\beta$]  (B is a non-terminal):
+    goto[$s$, $B$] = goto($s$, $B$)
+
+  [A -> $\alpha$ .]:
+    for each $t \in$ FOLLOW($A$):
+      action[$s$, $t$] = reduce ($A \to \alpha$)
+
+  [S' -> S .]:
+    action[$s$, $\$$] = accept
+\end{lstlisting}
+
+% ------------------------------------------------------------------
+\section{Key LR(0) Item Sets}
+% ------------------------------------------------------------------
+
+\subsection{State 0: Initial State}
+
+\begin{lstlisting}[style=pseudo]
+[Program' -> . Program]
+[Program  -> . DeclList]
+[DeclList -> . Decl DeclList]
+[DeclList -> .]                      -- reduce on $
+[Decl     -> . VarDecl]
+[Decl     -> . FuncDecl]
+[Decl     -> . ClassDecl]
+[Decl     -> . InterfaceDecl]
+[VarDecl  -> . Type id ;]
+[FuncDecl -> . RetType id ( Formals ) Block]
+[Type     -> . int TypeSuffix]
+[Type     -> . double TypeSuffix]
+[Type     -> . bool TypeSuffix]
+[Type     -> . string TypeSuffix]
+[Type     -> . id TypeSuffix]
+[RetType  -> . Type]
+[RetType  -> . void]
+[ClassDecl -> . class id ...]
+[InterfaceDecl -> . interface id ...]
+\end{lstlisting}
+
+\subsection{State 108: TypeSuffix Conflict}
+
+\begin{lstlisting}[style=pseudo]
+[TypeSuffix -> [ ] . TypeSuffix]    -- can shift [ for nested suffix
+[TypeSuffix -> .]                   -- can reduce TypeSuffix -> epsilon
+\end{lstlisting}
+
+Conflict on \texttt{[}: shift vs reduce. Resolution: \textbf{reduce} (type
+context is complete).
+
+\subsection{State 218: Dangling Else Conflict}
+
+\begin{lstlisting}[style=pseudo]
+[IfStmt -> if ( Expr ) Stmt . ElsePart]
+[ElsePart -> .]                          -- reduce on FOLLOW(ElsePart)
+[ElsePart -> . else Stmt]               -- shift on else
+\end{lstlisting}
+
+Conflict on \texttt{else}: shift vs reduce. Resolution: \textbf{shift}
+(standard dangling-else binding).
+
+% ------------------------------------------------------------------
+\section{Action Table: Selected Entries}
+% ------------------------------------------------------------------
+
+Notation: $s_N$ = shift to state $N$; $r_P$ = reduce by production $P$;
+acc = accept.
+
+\begin{center}
+\begin{tabular}{l|ccccccc}
+\toprule
+State & \texttt{int} & \texttt{void} & \texttt{class} & \texttt{id} & \texttt{\{} & \texttt{\$} & \texttt{else} \\
+\midrule
+0   & $s_{10}$ & $s_{15}$ & $s_{16}$ & $s_{14}$ & --- & --- & --- \\
+1   & ---      & ---      & ---      & $r$(resolve) & --- & acc & --- \\
+2   & ---      & ---      & ---      & ---      & --- & $r_0$ & --- \\
+10  & ---      & ---      & ---      & $r_{17}$ & --- & $r_{17}$ & --- \\
+218 & $r_{55}$ & $r_{55}$ & $r_{55}$ & $r_{55}$ & $r_{55}$ & $r_{55}$ & $s_{219}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{State 218, \texttt{else}: shift to state 219 (resolve dangling else by shifting).}
+
+% ------------------------------------------------------------------
+\section{Conflict Resolution Summary}
+% ------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{llllp{5cm}}
+\toprule
+\# & State & Token & Type & Resolution \\
+\midrule
+1 & 218 & \texttt{else} & Shift/Reduce & Prefer shift; binds else to nearest if \\
+2 & 108 & \texttt{[}    & Shift/Reduce & Prefer reduce; type context complete \\
+3 & 108 & \texttt{)}    & Reduce/Reduce & Use first matching production \\
+4 & 1   & \texttt{id}   & Shift/Reduce & Prefer reduce; complete DeclList \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------------
+\section{SLR(1) Parsing Algorithm}
+% ------------------------------------------------------------------
+
+\begin{lstlisting}[style=pseudo]
+state_stack = [0]
+symbol_stack = [$]
+
+while True:
+  s = state_stack[-1]
+  a = next_token.grammar_symbol()
+
+  if action[s][a] == shift t:
+    symbol_stack.push(a)
+    state_stack.push(t)
+    advance_input()
+
+  elif action[s][a] == reduce (A -> beta):
+    for _ in range(len(beta)):
+      symbol_stack.pop()
+      state_stack.pop()
+    t = goto[state_stack[-1]][A]
+    symbol_stack.push(A)
+    state_stack.push(t)
+
+  elif action[s][a] == accept:
+    return SUCCESS
+
+  else:
+    error_handler.report(s, a)
+    panic_mode_recover(FOLLOW(current_lhs))
+\end{lstlisting}
+
+% ------------------------------------------------------------------
+\section{Parse Trace: test1\_valid.decaf (Excerpt)}
+% ------------------------------------------------------------------
+
+Input: \texttt{void main() \{ int x; x = 5; Print(z); \}}
+
+\begin{longtable}{rp{3cm}p{3.5cm}p{3cm}p{3cm}}
+\toprule
+\textbf{Step} & \textbf{State Stack} & \textbf{Symbol Stack} & \textbf{Input} & \textbf{Action} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1  & [0] & [\$] & void main... & shift void \\
+2  & [0,15] & [\$,void] & main... & shift id \\
+3  & [0,15,N] & [\$,void,id] & ( )... & goto RetType \\
+4  & [0,...,R] & [\$,RetType] & main... & shift id=main \\
+5  & [...] & [\$,RetType,id] & (... & shift ( \\
+6  & [...] & [\$,RetType,id,(] & )... & $r_{19}$ Formals$\to\varepsilon$ \\
+7  & [...] & [\$,RetType,id,(,Formals] & )... & shift ) \\
+8  & [...] & [\$,...,)] & \{... & goto Block \\
+9  & [...] & [\$,...,Block...] & \{... & shift \{ \\
+10 & [...] & [\$,...,\{] & int x;... & shift int \\
+11 & [...] & [\$,...,int] & x;... & $r_{17}$ TypeSuffix$\to\varepsilon$ \\
+12 & [...] & [\$,...,TypeSuffix] & x;... & $r_{11}$ Type$\to$int TypeSuffix \\
+13 & [...] & [\$,...,Type] & x;... & shift id=x \\
+14 & [...] & [\$,...,Type,id] & ;... & shift ; \\
+15 & [...] & [\$,...,Type,id,;] & x=5... & $r_7$ VarDecl$\to$Type id ; \\
+16 & [...] & [\$,...,VarDecl] & x=5... & $r_{43}$ Stmt$\to$VarDecl \\
+17 & [...] & [\$,...,Stmt] & x=5... & goto StmtList \\
+18 & [...] & [\$,...,StmtList] & x=5... & shift id=x (ExprStmt) \\
+19 & [...] & [\$,...,id] & =5... & shift = \\
+20 & [...] & [\$,...,=] & 5;... & ... (reduce expr chain) \\
+\end{longtable}
+
+Full trace available in \texttt{output/test1\_valid\_lr\_parser.txt}.
+
+\end{document}

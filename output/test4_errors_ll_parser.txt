@@ -1,0 +1,123 @@
+LL(1) PARSER OUTPUT -test/test4_errors.decaf
+================================================================================
+
+Stack                                            Input                  Action
+------------------------------------------------ ---------------------- ------------------------------
+$ Program                                        void('void')           Program -> DeclList
+$ DeclList                                       void('void')           DeclList -> Decl DeclList
+$ DeclList Decl                                  void('void')           Decl -> void id ( Formals ) Block
+$ DeclList Block ) Formals ( id void             void('void')           match  'void'
+$ DeclList Block ) Formals ( id                  id('main')             match  'id'
+$ DeclList Block ) Formals (                     (('(')                 match  '('
+$ DeclList Block ) Formals                       )(')')                 Formals -> ε
+$ DeclList Block )                               )(')')                 match  ')'
+$ DeclList Block                                 {('{')                 Block -> { StmtList }
+$ DeclList } StmtList {                          {('{')                 match  '{'
+$ DeclList } StmtList                            int('int')             StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       int('int')             Stmt -> VarDecl
+$ DeclList } StmtList VarDecl                    int('int')             VarDecl -> Type id ;
+$ DeclList } StmtList ; id Type                  int('int')             Type -> int TypeSuffix
+$ DeclList } StmtList ; id TypeSuffix int        int('int')             match  'int'
+$ DeclList } StmtList ; id TypeSuffix            id('x')                TypeSuffix -> ε
+$ DeclList } StmtList ; id                       id('x')                match  'id'
+$ DeclList } StmtList ;                          id('x')                ERROR: expected ';'
+$ DeclList } StmtList ;                          =('=')                 ERROR: expected ';'
+$ DeclList } StmtList ;                          STRING_CONST('hello')  ERROR: expected ';'
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            int('int')             StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       int('int')             Stmt -> VarDecl
+$ DeclList } StmtList VarDecl                    int('int')             VarDecl -> Type id ;
+$ DeclList } StmtList ; id Type                  int('int')             Type -> int TypeSuffix
+$ DeclList } StmtList ; id TypeSuffix int        int('int')             match  'int'
+$ DeclList } StmtList ; id TypeSuffix            id('y')                TypeSuffix -> ε
+$ DeclList } StmtList ; id                       id('y')                match  'id'
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            id('y')                StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       id('y')                Stmt -> ExprStmt
+$ DeclList } StmtList ExprStmt                   id('y')                ExprStmt -> Expr ;
+$ DeclList } StmtList ; Expr                     id('y')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('y')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('y')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('y')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('y')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('y')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('y')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('y')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('y')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('y')                Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('y')                match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail =('=')                 CallTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail =('=')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail =('=')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail =('=')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail =('=')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail =('=')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail =('=')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        =('=')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               =('=')                 AssignTail -> = Expr
+$ DeclList } StmtList ; Expr =                   =('=')                 match  '='
+$ DeclList } StmtList ; Expr                     id('x')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('x')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('x')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('x')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('x')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('x')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('x')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('x')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('x')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('x')                Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('x')                match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail +('+')                 CallTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail +('+')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail +('+')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail +('+')                 AddTail -> + MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr + +('+')                 match  '+'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr ;(';')                 ERROR: no production M[MulExpr,;]
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        ;(';')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               ;(';')                 AssignTail -> ε
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            Print('Print')         StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       Print('Print')         Stmt -> PrintStmt
+$ DeclList } StmtList PrintStmt                  Print('Print')         PrintStmt -> Print ( ExprList ) ;
+$ DeclList } StmtList ; ) ExprList ( Print       Print('Print')         match  'Print'
+$ DeclList } StmtList ; ) ExprList (             (('(')                 match  '('
+$ DeclList } StmtList ; ) ExprList               id('z')                ExprList -> Expr ExprListTail
+$ DeclList } StmtList ; ) ExprListTail Expr      id('z')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrExpr id('z')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndExpr id('z')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqExpr id('z')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelExpr id('z')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddExpr id('z')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('z')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('z')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('z')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('z')                Primary -> id CallTail
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('z')                match  'id'
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail )(')')                 CallTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail )(')')                 PostTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail )(')')                 MulTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail )(')')                 AddTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail )(')')                 RelTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail )(')')                 EqTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail AndTail )(')')                 AndTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail OrTail )(')')                 OrTail -> ε
+$ DeclList } StmtList ; ) ExprListTail AssignTail )(')')                 AssignTail -> ε
+$ DeclList } StmtList ; ) ExprListTail           )(')')                 ExprListTail -> ε
+$ DeclList } StmtList ; )                        )(')')                 match  ')'
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            }('}')                 StmtList -> ε
+$ DeclList }                                     }('}')                 match  '}'
+$ DeclList                                       $(None)                DeclList -> ε
+$                                                $                      ACCEPT
+
+------------------------------------------------------------
+  ERRORS (4):
+    [SYNTAX] Line 4, Col 5: Expected ';', got 'id' ('x'). Expected ';', found 'id'.
+    [SYNTAX] Line 4, Col 7: Expected ';', got '=' ('='). Expected ';', found '='.
+    [SYNTAX] Line 4, Col 9: Expected ';', got 'STRING_CONST' ('hello'). Expected ';', found 'STRING_CONST'.
+    [SYNTAX] Line 6, Col 13: No production for (MulExpr, ';') — unexpected token ';' at line 6, col 13
+------------------------------------------------------------

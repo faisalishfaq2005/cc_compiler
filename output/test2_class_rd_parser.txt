@@ -1,0 +1,93 @@
+RD PARSER OUTPUT -test/test2_class.decaf
+============================================================
+
+AST:
+  [Program]  [L2]
+    [DeclList]
+      [ClassDecl] = 'Animal'  [L2]
+        [id] = 'Animal'  [L2]
+        [ClassBase]
+        [ClassImpl]
+        [FieldList]
+          [VarDecl] = 'name'  [L3]
+            [Type] = 'string'  [L3]
+              [BaseType] = 'string'
+              [TypeSuffix]
+            [id] = 'name'  [L3]
+          [VarDecl] = 'age'  [L4]
+            [Type] = 'int'  [L4]
+              [BaseType] = 'int'
+              [TypeSuffix]
+            [id] = 'age'  [L4]
+          [FuncDecl] = 'speak'  [L6]
+            [RetType] = 'void'  [L6]
+            [id] = 'speak'  [L6]
+            [Formals]
+            [Block]  [L6]
+              [StmtList]
+                [PrintStmt]  [L7]
+                  [ExprList]
+                    [StringLit] = '...'  [L7]
+          [FuncDecl] = 'getName'  [L10]
+            [Type] = 'string'  [L10]
+              [BaseType] = 'string'
+              [TypeSuffix]
+            [id] = 'getName'  [L10]
+            [Formals]
+            [Block]  [L10]
+              [StmtList]
+                [ReturnStmt]  [L11]
+                  [Var] = 'name'  [L11]
+      [ClassDecl] = 'Dog'  [L15]
+        [id] = 'Dog'  [L15]
+        [ClassBase] = 'Animal'
+          [id] = 'Animal'
+        [ClassImpl]
+        [FieldList]
+          [FuncDecl] = 'speak'  [L16]
+            [RetType] = 'void'  [L16]
+            [id] = 'speak'  [L16]
+            [Formals]
+            [Block]  [L16]
+              [StmtList]
+                [PrintStmt]  [L17]
+                  [ExprList]
+                    [StringLit] = 'Woof!'  [L17]
+      [FuncDecl] = 'main'  [L21]
+        [RetType] = 'void'  [L21]
+        [id] = 'main'  [L21]
+        [Formals]
+        [Block]  [L21]
+          [StmtList]
+            [VarDecl] = 'd'  [L22]
+              [Type] = 'Dog'  [L22]
+                [BaseType] = 'Dog'
+                [TypeSuffix]
+              [id] = 'd'  [L22]
+            [ExprStmt]  [L23]
+              [Assign] = '='  [L23]
+                [Var] = 'd'  [L23]
+                [New] = 'Dog'  [L23]
+            [ExprStmt]  [L24]
+              [FieldAccess] = 'speak'  [L24]
+                [Var] = 'd'  [L24]
+                [Call] = 'speak'  [L24]
+                  [ActualList]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  Animal               class        Animal               2     
+  Dog                  class        Dog                  15    
+  main                 function     void                 21    
+
+  Total entries: 3
+============================================================
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------

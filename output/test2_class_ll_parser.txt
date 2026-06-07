@@ -1,0 +1,297 @@
+LL(1) PARSER OUTPUT -test/test2_class.decaf
+================================================================================
+
+Stack                                            Input                  Action
+------------------------------------------------ ---------------------- ------------------------------
+$ Program                                        class('class')         Program -> DeclList
+$ DeclList                                       class('class')         DeclList -> Decl DeclList
+$ DeclList Decl                                  class('class')         Decl -> ClassDecl
+$ DeclList ClassDecl                             class('class')         ClassDecl -> class id ClassBase ClassImpl { FieldList }
+$ DeclList } FieldList { ClassImpl ClassBase id class class('class')         match  'class'
+$ DeclList } FieldList { ClassImpl ClassBase id  id('Animal')           match  'id'
+$ DeclList } FieldList { ClassImpl ClassBase     {('{')                 ClassBase -> ε
+$ DeclList } FieldList { ClassImpl               {('{')                 ClassImpl -> ε
+$ DeclList } FieldList {                         {('{')                 match  '{'
+$ DeclList } FieldList                           string('string')       FieldList -> Field FieldList
+$ DeclList } FieldList Field                     string('string')       Field -> Type id FieldRest
+$ DeclList } FieldList FieldRest id Type         string('string')       Type -> string TypeSuffix
+$ DeclList } FieldList FieldRest id TypeSuffix string string('string')       match  'string'
+$ DeclList } FieldList FieldRest id TypeSuffix   id('name')             TypeSuffix -> ε
+$ DeclList } FieldList FieldRest id              id('name')             match  'id'
+$ DeclList } FieldList FieldRest                 ;(';')                 FieldRest -> ;
+$ DeclList } FieldList ;                         ;(';')                 match  ';'
+$ DeclList } FieldList                           int('int')             FieldList -> Field FieldList
+$ DeclList } FieldList Field                     int('int')             Field -> Type id FieldRest
+$ DeclList } FieldList FieldRest id Type         int('int')             Type -> int TypeSuffix
+$ DeclList } FieldList FieldRest id TypeSuffix int int('int')             match  'int'
+$ DeclList } FieldList FieldRest id TypeSuffix   id('age')              TypeSuffix -> ε
+$ DeclList } FieldList FieldRest id              id('age')              match  'id'
+$ DeclList } FieldList FieldRest                 ;(';')                 FieldRest -> ;
+$ DeclList } FieldList ;                         ;(';')                 match  ';'
+$ DeclList } FieldList                           void('void')           FieldList -> Field FieldList
+$ DeclList } FieldList Field                     void('void')           Field -> void id ( Formals ) Block
+$ DeclList } FieldList Block ) Formals ( id void void('void')           match  'void'
+$ DeclList } FieldList Block ) Formals ( id      id('speak')            match  'id'
+$ DeclList } FieldList Block ) Formals (         (('(')                 match  '('
+$ DeclList } FieldList Block ) Formals           )(')')                 Formals -> ε
+$ DeclList } FieldList Block )                   )(')')                 match  ')'
+$ DeclList } FieldList Block                     {('{')                 Block -> { StmtList }
+$ DeclList } FieldList } StmtList {              {('{')                 match  '{'
+$ DeclList } FieldList } StmtList                Print('Print')         StmtList -> Stmt StmtList
+$ DeclList } FieldList } StmtList Stmt           Print('Print')         Stmt -> PrintStmt
+$ DeclList } FieldList } StmtList PrintStmt      Print('Print')         PrintStmt -> Print ( ExprList ) ;
+$ DeclList } FieldList } StmtList ; ) ExprList ( Print Print('Print')         match  'Print'
+$ DeclList } FieldList } StmtList ; ) ExprList ( (('(')                 match  '('
+$ DeclList } FieldList } StmtList ; ) ExprList   STRING_CONST('...')    ExprList -> Expr ExprListTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail Expr STRING_CONST('...')    Expr -> OrExpr AssignTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrExpr STRING_CONST('...')    OrExpr -> AndExpr OrTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndExpr STRING_CONST('...')    AndExpr -> EqExpr AndTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqExpr STRING_CONST('...')    EqExpr -> RelExpr EqTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelExpr STRING_CONST('...')    RelExpr -> AddExpr RelTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddExpr STRING_CONST('...')    AddExpr -> MulExpr AddTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr STRING_CONST('...')    MulExpr -> UnaryExpr MulTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr STRING_CONST('...')    UnaryExpr -> PostExpr
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr STRING_CONST('...')    PostExpr -> Primary PostTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary STRING_CONST('...')    Primary -> STRING_CONST
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail STRING_CONST STRING_CONST('...')    match  'STRING_CONST'
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail )(')')                 PostTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail )(')')                 MulTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail )(')')                 AddTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail )(')')                 RelTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail )(')')                 EqTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail )(')')                 AndTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail )(')')                 OrTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail )(')')                 AssignTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail )(')')                 ExprListTail -> ε
+$ DeclList } FieldList } StmtList ; )            )(')')                 match  ')'
+$ DeclList } FieldList } StmtList ;              ;(';')                 match  ';'
+$ DeclList } FieldList } StmtList                }('}')                 StmtList -> ε
+$ DeclList } FieldList }                         }('}')                 match  '}'
+$ DeclList } FieldList                           string('string')       FieldList -> Field FieldList
+$ DeclList } FieldList Field                     string('string')       Field -> Type id FieldRest
+$ DeclList } FieldList FieldRest id Type         string('string')       Type -> string TypeSuffix
+$ DeclList } FieldList FieldRest id TypeSuffix string string('string')       match  'string'
+$ DeclList } FieldList FieldRest id TypeSuffix   id('getName')          TypeSuffix -> ε
+$ DeclList } FieldList FieldRest id              id('getName')          match  'id'
+$ DeclList } FieldList FieldRest                 (('(')                 FieldRest -> ( Formals ) Block
+$ DeclList } FieldList Block ) Formals (         (('(')                 match  '('
+$ DeclList } FieldList Block ) Formals           )(')')                 Formals -> ε
+$ DeclList } FieldList Block )                   )(')')                 match  ')'
+$ DeclList } FieldList Block                     {('{')                 Block -> { StmtList }
+$ DeclList } FieldList } StmtList {              {('{')                 match  '{'
+$ DeclList } FieldList } StmtList                return('return')       StmtList -> Stmt StmtList
+$ DeclList } FieldList } StmtList Stmt           return('return')       Stmt -> ReturnStmt
+$ DeclList } FieldList } StmtList ReturnStmt     return('return')       ReturnStmt -> return RetExprOpt ;
+$ DeclList } FieldList } StmtList ; RetExprOpt return return('return')       match  'return'
+$ DeclList } FieldList } StmtList ; RetExprOpt   id('name')             RetExprOpt -> Expr
+$ DeclList } FieldList } StmtList ; Expr         id('name')             Expr -> OrExpr AssignTail
+$ DeclList } FieldList } StmtList ; AssignTail OrExpr id('name')             OrExpr -> AndExpr OrTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndExpr id('name')             AndExpr -> EqExpr AndTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqExpr id('name')             EqExpr -> RelExpr EqTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('name')             RelExpr -> AddExpr RelTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('name')             AddExpr -> MulExpr AddTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('name')             MulExpr -> UnaryExpr MulTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('name')             UnaryExpr -> PostExpr
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('name')             PostExpr -> Primary PostTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('name')             Primary -> id CallTail
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('name')             match  'id'
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail ;(';')                 CallTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ;(';')                 PostTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail ;(';')                 MulTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail OrTail ;(';')                 OrTail -> ε
+$ DeclList } FieldList } StmtList ; AssignTail   ;(';')                 AssignTail -> ε
+$ DeclList } FieldList } StmtList ;              ;(';')                 match  ';'
+$ DeclList } FieldList } StmtList                }('}')                 StmtList -> ε
+$ DeclList } FieldList }                         }('}')                 match  '}'
+$ DeclList } FieldList                           }('}')                 FieldList -> ε
+$ DeclList }                                     }('}')                 match  '}'
+$ DeclList                                       class('class')         DeclList -> Decl DeclList
+$ DeclList Decl                                  class('class')         Decl -> ClassDecl
+$ DeclList ClassDecl                             class('class')         ClassDecl -> class id ClassBase ClassImpl { FieldList }
+$ DeclList } FieldList { ClassImpl ClassBase id class class('class')         match  'class'
+$ DeclList } FieldList { ClassImpl ClassBase id  id('Dog')              match  'id'
+$ DeclList } FieldList { ClassImpl ClassBase     extends('extends')     ClassBase -> extends id
+$ DeclList } FieldList { ClassImpl id extends    extends('extends')     match  'extends'
+$ DeclList } FieldList { ClassImpl id            id('Animal')           match  'id'
+$ DeclList } FieldList { ClassImpl               {('{')                 ClassImpl -> ε
+$ DeclList } FieldList {                         {('{')                 match  '{'
+$ DeclList } FieldList                           void('void')           FieldList -> Field FieldList
+$ DeclList } FieldList Field                     void('void')           Field -> void id ( Formals ) Block
+$ DeclList } FieldList Block ) Formals ( id void void('void')           match  'void'
+$ DeclList } FieldList Block ) Formals ( id      id('speak')            match  'id'
+$ DeclList } FieldList Block ) Formals (         (('(')                 match  '('
+$ DeclList } FieldList Block ) Formals           )(')')                 Formals -> ε
+$ DeclList } FieldList Block )                   )(')')                 match  ')'
+$ DeclList } FieldList Block                     {('{')                 Block -> { StmtList }
+$ DeclList } FieldList } StmtList {              {('{')                 match  '{'
+$ DeclList } FieldList } StmtList                Print('Print')         StmtList -> Stmt StmtList
+$ DeclList } FieldList } StmtList Stmt           Print('Print')         Stmt -> PrintStmt
+$ DeclList } FieldList } StmtList PrintStmt      Print('Print')         PrintStmt -> Print ( ExprList ) ;
+$ DeclList } FieldList } StmtList ; ) ExprList ( Print Print('Print')         match  'Print'
+$ DeclList } FieldList } StmtList ; ) ExprList ( (('(')                 match  '('
+$ DeclList } FieldList } StmtList ; ) ExprList   STRING_CONST('Woof!')  ExprList -> Expr ExprListTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail Expr STRING_CONST('Woof!')  Expr -> OrExpr AssignTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrExpr STRING_CONST('Woof!')  OrExpr -> AndExpr OrTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndExpr STRING_CONST('Woof!')  AndExpr -> EqExpr AndTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqExpr STRING_CONST('Woof!')  EqExpr -> RelExpr EqTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelExpr STRING_CONST('Woof!')  RelExpr -> AddExpr RelTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddExpr STRING_CONST('Woof!')  AddExpr -> MulExpr AddTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr STRING_CONST('Woof!')  MulExpr -> UnaryExpr MulTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr STRING_CONST('Woof!')  UnaryExpr -> PostExpr
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr STRING_CONST('Woof!')  PostExpr -> Primary PostTail
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary STRING_CONST('Woof!')  Primary -> STRING_CONST
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail STRING_CONST STRING_CONST('Woof!')  match  'STRING_CONST'
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail )(')')                 PostTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail MulTail )(')')                 MulTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail AddTail )(')')                 AddTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail RelTail )(')')                 RelTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail EqTail )(')')                 EqTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail AndTail )(')')                 AndTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail OrTail )(')')                 OrTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail AssignTail )(')')                 AssignTail -> ε
+$ DeclList } FieldList } StmtList ; ) ExprListTail )(')')                 ExprListTail -> ε
+$ DeclList } FieldList } StmtList ; )            )(')')                 match  ')'
+$ DeclList } FieldList } StmtList ;              ;(';')                 match  ';'
+$ DeclList } FieldList } StmtList                }('}')                 StmtList -> ε
+$ DeclList } FieldList }                         }('}')                 match  '}'
+$ DeclList } FieldList                           }('}')                 FieldList -> ε
+$ DeclList }                                     }('}')                 match  '}'
+$ DeclList                                       void('void')           DeclList -> Decl DeclList
+$ DeclList Decl                                  void('void')           Decl -> void id ( Formals ) Block
+$ DeclList Block ) Formals ( id void             void('void')           match  'void'
+$ DeclList Block ) Formals ( id                  id('main')             match  'id'
+$ DeclList Block ) Formals (                     (('(')                 match  '('
+$ DeclList Block ) Formals                       )(')')                 Formals -> ε
+$ DeclList Block )                               )(')')                 match  ')'
+$ DeclList Block                                 {('{')                 Block -> { StmtList }
+$ DeclList } StmtList {                          {('{')                 match  '{'
+$ DeclList } StmtList                            id('Dog')              StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       id('Dog')              Stmt -> ExprStmt
+$ DeclList } StmtList ExprStmt                   id('Dog')              ExprStmt -> Expr ;
+$ DeclList } StmtList ; Expr                     id('Dog')              Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('Dog')              OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('Dog')              AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('Dog')              EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('Dog')              RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('Dog')              AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('Dog')              MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('Dog')              UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('Dog')              PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('Dog')              Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('Dog')              match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id('d')                ERROR: no production M[CallTail,id]
+$ DeclList } StmtList                            id('d')                StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       id('d')                Stmt -> ExprStmt
+$ DeclList } StmtList ExprStmt                   id('d')                ExprStmt -> Expr ;
+$ DeclList } StmtList ; Expr                     id('d')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('d')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('d')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('d')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('d')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('d')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('d')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('d')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('d')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('d')                Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('d')                match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail ;(';')                 CallTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ;(';')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail ;(';')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        ;(';')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               ;(';')                 AssignTail -> ε
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            id('d')                StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       id('d')                Stmt -> ExprStmt
+$ DeclList } StmtList ExprStmt                   id('d')                ExprStmt -> Expr ;
+$ DeclList } StmtList ; Expr                     id('d')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('d')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('d')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('d')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('d')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('d')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('d')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('d')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('d')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('d')                Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('d')                match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail =('=')                 CallTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail =('=')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail =('=')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail =('=')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail =('=')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail =('=')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail =('=')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        =('=')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               =('=')                 AssignTail -> = Expr
+$ DeclList } StmtList ; Expr =                   =('=')                 match  '='
+$ DeclList } StmtList ; Expr                     New('New')             Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        New('New')             OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr New('New')             AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr New('New')             EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr New('New')             RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr New('New')             AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr New('New')             MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr New('New')             UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr New('New')             PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary New('New')             Primary -> New ( id )
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) id ( New New('New')             match  'New'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) id ( (('(')                 match  '('
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) id id('Dog')              match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) )(')')                 match  ')'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ;(';')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail ;(';')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        ;(';')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               ;(';')                 AssignTail -> ε
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            id('d')                StmtList -> Stmt StmtList
+$ DeclList } StmtList Stmt                       id('d')                Stmt -> ExprStmt
+$ DeclList } StmtList ExprStmt                   id('d')                ExprStmt -> Expr ;
+$ DeclList } StmtList ; Expr                     id('d')                Expr -> OrExpr AssignTail
+$ DeclList } StmtList ; AssignTail OrExpr        id('d')                OrExpr -> AndExpr OrTail
+$ DeclList } StmtList ; AssignTail OrTail AndExpr id('d')                AndExpr -> EqExpr AndTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqExpr id('d')                EqExpr -> RelExpr EqTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelExpr id('d')                RelExpr -> AddExpr RelTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddExpr id('d')                AddExpr -> MulExpr AddTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulExpr id('d')                MulExpr -> UnaryExpr MulTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail UnaryExpr id('d')                UnaryExpr -> PostExpr
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostExpr id('d')                PostExpr -> Primary PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail Primary id('d')                Primary -> id CallTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('d')                match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail .('.')                 CallTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail .('.')                 PostTail -> . id CallTail PostTail
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id . .('.')                 match  '.'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail id id('speak')            match  'id'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail CallTail (('(')                 CallTail -> ( ActualList )
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) ActualList ( (('(')                 match  '('
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) ActualList )(')')                 ActualList -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ) )(')')                 match  ')'
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail PostTail ;(';')                 PostTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail MulTail ;(';')                 MulTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail AddTail ;(';')                 AddTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail RelTail ;(';')                 RelTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail EqTail ;(';')                 EqTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail AndTail ;(';')                 AndTail -> ε
+$ DeclList } StmtList ; AssignTail OrTail        ;(';')                 OrTail -> ε
+$ DeclList } StmtList ; AssignTail               ;(';')                 AssignTail -> ε
+$ DeclList } StmtList ;                          ;(';')                 match  ';'
+$ DeclList } StmtList                            }('}')                 StmtList -> ε
+$ DeclList }                                     }('}')                 match  '}'
+$ DeclList                                       $(None)                DeclList -> ε
+$                                                $                      ACCEPT
+
+------------------------------------------------------------
+  ERRORS (1):
+    [SYNTAX] Line 22, Col 9: No production for (CallTail, 'id') — unexpected token 'd' at line 22, col 9
+------------------------------------------------------------

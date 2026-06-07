@@ -1,0 +1,276 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{pdflscape}
+
+\hypersetup{colorlinks=true, linkcolor=blue}
+
+\lstdefinestyle{pseudo}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  columns=flexible,
+}
+
+\title{\textbf{LL(1) Parse Table}\\
+       \large Decaf Mini-Compiler\\
+       CS-471L Compiler Construction Lab --- UET Lahore, Spring 2026}
+\author{Compiler Project Team}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------------
+\section{Introduction}
+% ------------------------------------------------------------------
+
+The LL(1) parse table $M[A, a]$ specifies, for each non-terminal $A$ on top
+of the parse stack and each possible lookahead terminal $a$, the production
+that must be applied.
+
+\subsection{Construction Rule}
+
+For each production $A \to \alpha$:
+\begin{enumerate}
+  \item For each terminal $t \in \text{FIRST}(\alpha) \setminus \{\varepsilon\}$:
+        set $M[A, t] = (A \to \alpha)$.
+  \item If $\varepsilon \in \text{FIRST}(\alpha)$: for each $t \in \text{FOLLOW}(A)$:
+        set $M[A, t] = (A \to \alpha)$.
+\end{enumerate}
+
+\subsection{The Parsing Algorithm}
+
+\begin{lstlisting}[style=pseudo]
+push $ then push Start onto the stack
+token = next_token()
+loop:
+  X = top of stack
+  if X == $ and token == $: ACCEPT
+  elif X is a terminal:
+    if X == token: pop; token = next_token()
+    else: error("unexpected token")
+  else:  // X is a non-terminal
+    if M[X, token] is defined:
+      pop X; push M[X, token] reversed
+    else:
+      error(); panic_mode_recover(FOLLOW(X))
+\end{lstlisting}
+
+% ------------------------------------------------------------------
+\section{Table: Declarations}
+% ------------------------------------------------------------------
+
+\subsection{Program, DeclList, Decl}
+
+\begin{center}
+\begin{tabular}{l|ccccccccc}
+\toprule
+NT & \texttt{bool} & \texttt{class} & \texttt{double} & \texttt{id} & \texttt{int} & \texttt{interface} & \texttt{string} & \texttt{void} & \texttt{\$} \\
+\midrule
+Program   & P0 & P0 & P0 & P0 & P0 & P0 & P0 & P0 & P0 \\
+DeclList  & P1 & P1 & P1 & P1 & P1 & P1 & P1 & P1 & P2 \\
+Decl      & P3/4 & P5 & P3/4 & P3/4 & P3/4 & P6 & P3/4 & P4 & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{P0: Program$\to$DeclList; P1: DeclList$\to$Decl DeclList; P2: DeclList$\to\varepsilon$;
+P3: Decl$\to$VarDecl; P4: Decl$\to$FuncDecl; P5: Decl$\to$ClassDecl;
+P6: Decl$\to$InterfaceDecl}
+
+\subsection{Type, TypeSuffix, RetType}
+
+\begin{center}
+\begin{tabular}{l|ccccccc}
+\toprule
+NT & \texttt{bool} & \texttt{double} & \texttt{id} & \texttt{int} & \texttt{string} & \texttt{void} & \texttt{[} \\
+\midrule
+Type       & P13 & P12 & P15 & P11 & P14 & — & — \\
+TypeSuffix & $\varepsilon$ & $\varepsilon$ & $\varepsilon$ & $\varepsilon$ & $\varepsilon$ & — & P16 \\
+RetType    & P9  & P9  & P9  & P9  & P9  & P10 & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{P9: RetType$\to$Type; P10: RetType$\to$void; P11--P15: Type$\to$X TypeSuffix;
+P16: TypeSuffix$\to$\texttt{[]\,}TypeSuffix; P17: TypeSuffix$\to\varepsilon$}
+
+% ------------------------------------------------------------------
+\section{Table: Statements}
+% ------------------------------------------------------------------
+
+\subsection{StmtList, Stmt}
+
+\begin{center}
+\begin{tabular}{l|cccccccccc}
+\toprule
+NT       & \texttt{int/bool/...} & \texttt{id}* & \texttt{if} & \texttt{while} & \texttt{for} & \texttt{return} & \texttt{break} & \texttt{Print} & \texttt{\{} & \texttt{\}} \\
+\midrule
+StmtList & P41 & P41 & P41 & P41 & P41 & P41 & P41 & P41 & P41 & P42 \\
+Stmt     & P43 & P43/P44 & P45 & P46 & P47 & P48 & P49 & P50 & P51 & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+*On \texttt{id}: if next-next token is \texttt{id} $\Rightarrow$ P43 (VarDecl), else P44 (ExprStmt).
+
+\subsection{IfStmt, ElsePart}
+
+\begin{center}
+\begin{tabular}{l|cc}
+\toprule
+NT        & \texttt{if} & \texttt{else} \\
+\midrule
+IfStmt    & P53 & — \\
+ElsePart  & — & P54 (shift wins over P55 $\varepsilon$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{Dangling-else resolution: on \texttt{else}, prefer shift (P54) over reduce (P55).}
+
+% ------------------------------------------------------------------
+\section{Table: Expressions}
+% ------------------------------------------------------------------
+
+\subsection{Expr, AssignTail, OrExpr/OrTail, AndExpr/AndTail}
+
+Let $\mathcal{E}$ denote any token in FIRST(Expr) = \{!, (, -, BOOL\_CONST, DOUBLE\_CONST,
+INT\_CONST, New, NewArray, ReadInteger, ReadLine, STRING\_CONST, id, null, this\}.
+
+\begin{center}
+\begin{tabular}{l|ccc}
+\toprule
+NT         & $\mathcal{E}$ tokens & \texttt{=} & FOLLOW \\
+\midrule
+Expr       & P70 & — & — \\
+AssignTail & — & P71 & P72 ($\varepsilon$) \\
+OrExpr     & P73 & — & — \\
+OrTail     & — & — (from parent) & P75 ($\varepsilon$) \\
+OrTail     & — & \texttt{||} $\Rightarrow$ P74 & P75 ($\varepsilon$) \\
+AndExpr    & P76 & — & — \\
+AndTail    & — & \texttt{\&\&} $\Rightarrow$ P77 & P78 ($\varepsilon$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{EqExpr/EqTail, RelExpr/RelTail}
+
+\begin{center}
+\begin{tabular}{l|ccccc}
+\toprule
+NT      & $\mathcal{E}$ & \texttt{==} & \texttt{!=} & \texttt{<}/\texttt{<=}/\texttt{>}/\texttt{>=} & FOLLOW \\
+\midrule
+EqExpr  & P79 & — & — & — & — \\
+EqTail  & — & P80 & P81 & — & P82 ($\varepsilon$) \\
+RelExpr & P83 & — & — & — & — \\
+RelTail & — & — & — & P84--P87 & P88 ($\varepsilon$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{AddExpr/AddTail, MulExpr/MulTail}
+
+\begin{center}
+\begin{tabular}{l|cccc}
+\toprule
+NT      & $\mathcal{E}$ & \texttt{+} & \texttt{-} & \texttt{*}/\texttt{/}/\texttt{\%} \\
+\midrule
+AddExpr & P89 & — & — & — \\
+AddTail & — & P90 & P91 & — \\
+MulExpr & P93 & — & — & — \\
+MulTail & — & — & — & P94/P95/P96 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{UnaryExpr, PostExpr, PostTail, CallTail, Primary}
+
+\begin{center}
+\begin{tabular}{l|cccccc}
+\toprule
+NT        & \texttt{!} & \texttt{-} & Primary tokens & \texttt{.} & \texttt{[} & \texttt{(} \\
+\midrule
+UnaryExpr & P98 & P99 & P100 & — & — & — \\
+PostExpr  & — & — & P101 & — & — & — \\
+PostTail  & — & — & — & P103 & P102 & — \\
+CallTail  & — & — & — & — & — & P105 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{l|cccccccccccc}
+\toprule
+NT      & \texttt{id} & INT & DBL & BOOL & STR & \texttt{null} & \texttt{this} & \texttt{(} & ReadInt & ReadLine & New & NewArray \\
+\midrule
+Primary & P107 & P108 & P109 & P110 & P111 & P112 & P113 & P114 & P115 & P116 & P117 & P118 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------------
+\section{Conflict Resolution Summary}
+% ------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Cell} & \textbf{Conflict} & \textbf{Productions} & \textbf{Resolution} \\
+\midrule
+$M[\text{Stmt}, \texttt{id}]$   & Shift/reduce & VarDecl vs ExprStmt & 2-token lookahead \\
+$M[\text{ElsePart}, \texttt{else}]$ & Shift/reduce & P54 vs P55 & Prefer shift (P54) \\
+SLR(1) state 108, \texttt{[}    & Shift/reduce & TypeSuffix        & Prefer reduce \\
+SLR(1) state 1, \texttt{id}     & Shift/reduce & DeclList          & Prefer reduce \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ------------------------------------------------------------------
+\section{Sample Parse Trace}
+% ------------------------------------------------------------------
+
+Input: \texttt{void main() \{ return 0; \}}
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{Step} & \textbf{Stack (top right)} & \textbf{Input} & \textbf{Action} \\
+\midrule
+1  & \$ Program & void main ... & P0: Program$\to$DeclList \\
+2  & \$ DeclList & void main ... & P1: DeclList$\to$Decl DeclList \\
+3  & \$ DeclList Decl & void main ... & P4: Decl$\to$FuncDecl \\
+4  & \$ DeclList FuncDecl & void main ... & expand FuncDecl \\
+5  & \$ DeclList Block ) Formals ( id RetType & void ... & P10: RetType$\to$void \\
+6  & \$ DeclList Block ) Formals ( id void & void ... & match void \\
+7  & \$ DeclList Block ) Formals ( id & main ... & match id \\
+8  & \$ DeclList Block ) Formals ( & ( ) ... & match ( \\
+9  & \$ DeclList Block ) Formals & ) ... & P19: Formals$\to\varepsilon$ \\
+10 & \$ DeclList Block ) & ) ... & match ) \\
+11 & \$ DeclList Block & \{ return 0; \} & P40: Block$\to$\{ StmtList \} \\
+12 & \$ DeclList \} StmtList \{ & \{ ... & match \{ \\
+13 & \$ DeclList \} StmtList & return 0; \} & P41: StmtList$\to$Stmt StmtList \\
+14 & \$ DeclList \} StmtList Stmt & return 0; \} & P48: Stmt$\to$ReturnStmt \\
+15 & \$ DeclList \} StmtList ; RetExprOpt return & return 0; \} & match return \\
+16 & \$ DeclList \} StmtList ; RetExprOpt & 0; \} & P63: RetExprOpt$\to$Expr \\
+17 & ... match 0, reduce through expr chain ... & ; \} & P52 complete \\
+18 & \$ DeclList \} StmtList & \} & P42: StmtList$\to\varepsilon$ \\
+19 & \$ DeclList \} & \} & match \} \\
+20 & \$ DeclList & \$ & P2: DeclList$\to\varepsilon$ \\
+21 & \$ & \$ & \textbf{ACCEPT} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
