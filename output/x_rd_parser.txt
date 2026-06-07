@@ -1,0 +1,62 @@
+RD PARSER OUTPUT -test/x.decaf
+============================================================
+
+AST:
+  [Program]  [L1]
+    [DeclList]
+      [FuncDecl] = 'main'  [L1]
+        [RetType] = 'void'  [L1]
+        [id] = 'main'  [L1]
+        [Formals]
+        [Block]  [L1]
+          [StmtList]
+            [VarDecl] = 'a'  [L2]
+              [Type] = 'int'  [L2]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'a'  [L2]
+            [VarDecl] = 'b'  [L3]
+              [Type] = 'int'  [L3]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'b'  [L3]
+            [VarDecl] = 'c'  [L4]
+              [Type] = 'int'  [L4]
+                [BaseType] = 'int'
+                [TypeSuffix]
+              [id] = 'c'  [L4]
+            [ExprStmt]  [L5]
+              [Assign] = '='  [L5]
+                [Var] = 'a'  [L5]
+                [IntLit] = 10  [L5]
+            [ExprStmt]  [L6]
+              [Assign] = '='  [L6]
+                [Var] = 'b'  [L6]
+                [IntLit] = 3  [L6]
+            [ExprStmt]  [L7]
+              [Assign] = '='  [L7]
+                [Var] = 'c'  [L7]
+                [BinOp] = '+'  [L7]
+                  [Var] = 'a'  [L7]
+                  [BinOp] = '*'  [L7]
+                    [Var] = 'b'  [L7]
+                    [IntLit] = 2  [L7]
+            [PrintStmt]  [L8]
+              [ExprList]
+                [Var] = 'c'  [L8]
+
+============================================================
+  Symbol Table
+  (Scopes: 1, Hash size: 211)
+============================================================
+
+  Scope 0 [global]:
+  Name                 Kind         Type                 Line  
+  -------------------- ------------ -------------------- ------
+  main                 function     void                 1     
+
+  Total entries: 1
+============================================================
+------------------------------------------------------------
+  Compilation successful (no errors or warnings).
+------------------------------------------------------------

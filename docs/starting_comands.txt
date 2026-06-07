@@ -1,0 +1,5 @@
+writes any .decaf file, puts it anywhere, then runs:
+
+  python src/main.py her_test.decaf --all
+
+  That's it. Output automatically saves to output/ folder with the filename as prefix.

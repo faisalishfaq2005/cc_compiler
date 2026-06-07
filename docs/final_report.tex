@@ -1,0 +1,352 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{microtype}
+
+% ── Code style ──────────────────────────────────────────────────────────────
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  framerule=0pt,
+  xleftmargin=8pt,
+  xrightmargin=8pt,
+  breaklines=true,
+  captionpos=b
+}
+
+% ── Section formatting ───────────────────────────────────────────────────────
+\titleformat{\section}{\large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+% ── Header / Footer ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small CS-471L Compiler Construction Lab}
+\rhead{\small Decaf Mini-Compiler}
+\cfoot{\thepage}
+
+% ────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Title block ─────────────────────────────────────────────────────────────
+\begin{center}
+  {\LARGE\bfseries Compiler Construction Lab (CS-471L)}\\[6pt]
+  {\large\bfseries Final Project Report: Decaf Mini-Compiler}\\[10pt]
+  University of Engineering \& Technology, Lahore\\
+  Department of Computer Science\\
+  Spring 2026\\[14pt]
+
+  \begin{tabular}{ll}
+    \textbf{Member 1:} & \texttt{[Your Name Here]} \quad Roll No: \texttt{[XXXX-CS-XXX]} \\[4pt]
+    \textbf{Member 2:} & \texttt{[Partner Name Here]} \quad Roll No: \texttt{[XXXX-CS-XXX]} \\[4pt]
+    \textbf{Instructor:} & aliya.farooq@uet.edu.pk \\
+  \end{tabular}
+\end{center}
+
+\vspace{4pt}
+\hrule
+\vspace{12pt}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+This project implements a front-end compiler for \textbf{Decaf}, a statically typed,
+object-oriented language designed for compiler construction courses. Decaf is similar
+to Java but stripped of generics, exceptions, and complex I/O, making it tractable
+while remaining expressive enough to demonstrate all major compiler front-end stages.
+
+The compiler is implemented entirely in Python 3.10+ with no external dependencies
+and is organised as \textbf{six cooperating modules}:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{llX}
+\toprule
+\textbf{Module} & \textbf{File} & \textbf{Role} \\
+\midrule
+Lexical Analyzer      & \texttt{lexer.py}        & Tokenises source text (double-buffering) \\
+Recursive Descent     & \texttt{rd\_parser.py}   & Hand-coded parser; builds AST; fills symbol table \\
+LL(1) Parser          & \texttt{ll\_parser.py}   & Table-driven predictive parser with trace \\
+SLR(1) LR Parser      & \texttt{lr\_parser.py}   & Bottom-up shift-reduce parser \\
+Symbol Table          & \texttt{symbol\_table.py}& Scoped hash-based symbol store \\
+Error Handler         & \texttt{error\_handler.py}& Centralised error collection and recovery \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+All parsers share a single \texttt{Grammar} object (built in \texttt{grammar.py})
+that computes FIRST/FOLLOW sets and builds both the LL(1) parse table and the
+SLR(1) action/goto tables. The entry point is \texttt{src/main.py}, which provides
+a CLI to run any combination of modules on a \texttt{.decaf} source file.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 1 — Lexical Analyzer (\texttt{lexer.py})}
+
+The lexer converts raw source text into a flat stream of \texttt{Token} objects.
+Each token carries: \texttt{type} (a \texttt{TokenType} enum), \texttt{value},
+\texttt{line}, and \texttt{col}.
+
+\subsection*{Double Buffering}
+The lexer uses two 512-character buffers loaded alternately from the source string.
+Two pointers are maintained: \texttt{lexeme\_start} marks the beginning of the
+current token and \texttt{forward} probes ahead. When \texttt{forward} reaches a
+buffer boundary the next buffer is loaded, so a token that straddles a boundary is
+always fully available in memory. This avoids per-character OS calls and is the
+technique described in the Dragon Book (Aho et al., 2006).
+
+\subsection*{What the Lexer Recognises}
+Keywords (\texttt{int}, \texttt{void}, \texttt{class}, \texttt{if}, \ldots),
+identifiers, integer literals (decimal and hexadecimal \texttt{0x\ldots}),
+double literals (including scientific notation \texttt{1.5e-3}), string constants,
+all operators and punctuation, and both comment styles (\texttt{//} and
+\texttt{/* */}). On an unrecognised character it reports a LEXICAL error via the
+Error Handler and continues scanning.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 2 — Grammar and FIRST/FOLLOW (\texttt{grammar.py})}
+
+Before any parser runs, a \texttt{Grammar} object is built from approximately
+\textbf{121 productions} covering the full Decaf language. This object is
+constructed once and shared by all three parsers.
+
+\subsection*{FIRST Sets}
+\textsc{First}$(A)$ is the set of terminals that can begin any string derived from
+$A$. Computed iteratively: for each production $A \to X_1 X_2 \ldots$,
+add \textsc{First}$(X_1) \setminus \{\varepsilon\}$ to \textsc{First}$(A)$; if
+$X_1$ is nullable also add \textsc{First}$(X_2)$, and so on. Repeat until no
+change.
+
+\subsection*{FOLLOW Sets}
+\textsc{Follow}$(A)$ is the set of terminals that can appear immediately after $A$
+in any sentential form. For each production $B \to \alpha A \beta$:
+add \textsc{First}$(\beta) \setminus \{\varepsilon\}$ to \textsc{Follow}$(A)$;
+if $\varepsilon \in \textsc{First}(\beta)$, also add \textsc{Follow}$(B)$.
+
+\subsection*{Grammar Transformations for LL(1)}
+Left-recursion is eliminated and productions are left-factored. For example,
+addition expressions become:
+\begin{lstlisting}
+AddExpr -> MulExpr AddTail
+AddTail -> + MulExpr AddTail | - MulExpr AddTail | epsilon
+\end{lstlisting}
+A key disambiguation introduces \texttt{DeclRest} and \texttt{FieldRest}
+non-terminals so that \texttt{Decl} and \texttt{Field} are genuinely LL(1):
+\begin{lstlisting}
+Decl    -> Type id DeclRest | void id ( Formals ) Block | ...
+DeclRest -> ;  |  ( Formals ) Block
+\end{lstlisting}
+
+\subsection*{Grammar Statistics}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Non-terminals & 55 \\
+Productions   & 121 \\
+Terminals     & $\approx$40 \\
+LL(1) table entries & $\approx$400 \\
+SLR(1) states & 229 \\
+SLR(1) conflicts (all resolved) & 4 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 3 — Recursive Descent Parser (\texttt{rd\_parser.py})}
+
+The RD parser is a hand-coded top-down parser with \textbf{one Python method per
+non-terminal} (55 methods in total). It is the most readable translation of the
+grammar into code, and it is the only parser that builds a full AST and populates
+the symbol table.
+
+\subsection*{How It Works}
+Each method reads the current lookahead token and decides which production to apply
+using an \texttt{if/elif/else} chain — one branch per alternative in the
+production. When ambiguity requires two tokens of lookahead (e.g.\ distinguishing
+a named-type variable declaration \texttt{Dog d;} from an expression statement),
+the parser peeks one token ahead.
+
+Every method returns a \textbf{dict-based AST node}:
+\begin{lstlisting}[language=Python]
+{'type': 'FuncDecl', 'value': 'main', 'line': 2,
+ 'children': [formals_node, body_node]}
+\end{lstlisting}
+The AST is printed as an indented tree at the end of the parse.
+
+\subsection*{Symbol Table Integration}
+\begin{itemize}
+  \item \textbf{On declaration} (\texttt{VarDecl}, \texttt{FuncDecl},
+    \texttt{ClassDecl}): calls \texttt{symbol\_table.insert()} with name, kind,
+    type, scope level, and source position.
+  \item \textbf{On identifier use}: calls \texttt{symbol\_table.lookup()} searching
+    from innermost scope outward; reports a SEMANTIC error if the name is not found.
+  \item \textbf{On entering/leaving a block}: calls \texttt{enter\_scope()} /
+    \texttt{exit\_scope()} to maintain correct nesting.
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 4 — LL(1) Non-Recursive Parser (\texttt{ll\_parser.py})}
+
+The LL(1) parser is \textbf{table-driven} and uses an explicit stack instead of
+Python recursion. At each step it examines the stack top and the current lookahead,
+then performs one of three actions:
+
+\begin{enumerate}
+  \item \textbf{Match}: stack top is a terminal equal to the lookahead — pop and
+    advance.
+  \item \textbf{Expand}: stack top is a non-terminal $A$ — look up $M[A,\,a]$, pop
+    $A$, push the production RHS in reverse order.
+  \item \textbf{Error}: no table entry — report the error, then do panic-mode
+    recovery by skipping input tokens until one in \textsc{Follow}$(A)$ is found.
+\end{enumerate}
+
+The parser records a \textbf{derivation trace} — a list of
+(stack snapshot, lookahead, action) rows — which can be printed or saved to a file.
+For a typical 50-token Decaf program the trace has $\approx$200 rows.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 5 — SLR(1) LR Parser (\texttt{lr\_parser.py})}
+
+The SLR(1) parser is a \textbf{bottom-up shift-reduce} parser. Rather than
+predicting expansions it shifts tokens onto a stack until it recognises a complete
+production RHS, then \emph{reduces} by replacing it with the LHS non-terminal.
+
+\subsection*{The Two Stacks}
+A \textbf{state stack} and a \textbf{symbol stack} are maintained in parallel.
+The state stack encodes everything seen so far; the action table maps
+(state, lookahead) to one of: \emph{shift}, \emph{reduce}, or \emph{accept}.
+After a reduce of $A \to \alpha$ ($|\alpha|$ symbols are popped), the goto table
+maps (new top state, $A$) to the next state.
+
+\subsection*{Conflict Resolution}
+The four shift/reduce conflicts in the Decaf grammar are resolved as follows:
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Conflict} & \textbf{State} & \textbf{Token} & \textbf{Resolution} \\
+\midrule
+Dangling else    & 218 & \texttt{else} & Prefer shift (nearest \texttt{if}) \\
+TypeSuffix       & 108 & \texttt{[}    & Prefer reduce \\
+Reduce/reduce    & 108 & \texttt{)}    & Use first production \\
+DeclList         & 1   & \texttt{id}   & Prefer reduce \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 6 — Symbol Table (\texttt{symbol\_table.py})}
+
+The symbol table is implemented as a \textbf{hash table of size 211} (a prime,
+minimising clustering) using polynomial rolling hash
+$h = \sum_i c_i \cdot 31^{n-1-i} \bmod 211$.
+On top of the hash table is a \textbf{scope stack} — a list of Python dicts, one
+per nesting level.
+
+Each \texttt{SymbolEntry} stores: name, kind (\texttt{variable}, \texttt{function},
+\texttt{class}, \texttt{interface}, \texttt{parameter}, \texttt{array}), type
+string, scope level, source line/column, and an attributes dict for function
+return type and parameter types.
+
+\texttt{lookup(name)} searches from the innermost scope outward, so an inner
+declaration correctly shadows an outer one.
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Module 7 — Error Handler (\texttt{error\_handler.py}) \textnormal{\small[Bonus]}}
+
+The error handler is a \textbf{centralised diagnostic sink} shared by every module.
+It never raises exceptions; instead it collects errors and prints a sorted summary
+at the end of each pass. This allows the compiler to report multiple independent
+errors from a single compilation.
+
+\begin{itemize}
+  \item \textbf{Error kinds}: LEXICAL, SYNTAX, SEMANTIC — each with line and column.
+  \item \textbf{Panic-mode recovery}: on a syntax error, skip input tokens until a
+    token in \textsc{Follow}(current non-terminal) is found, then resume.
+  \item \textbf{Phrase-level hints}: specific mismatch patterns produce actionable
+    suggestions, e.g.\ ``Expected \texttt{;}, found \texttt{,} — did you use comma
+    instead of semicolon?''
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Integration and Pipeline}
+
+\texttt{main.py} wires all modules together. The grammar is built \emph{once};
+for each parser stage a fresh \texttt{Lexer}, \texttt{SymbolTable}, and
+\texttt{ErrorHandler} are instantiated so stages do not interfere:
+
+\begin{lstlisting}
+grammar = Grammar(PRODUCTIONS)
+grammar.compute_first_sets(); grammar.compute_follow_sets()
+
+for stage in [RD, LL, LR]:
+    eh  = ErrorHandler()
+    st  = SymbolTable()
+    lex = Lexer(source, eh)     # re-scan from character 0
+    p   = StageParser(grammar, lex, st, eh)
+    p.parse()                   # results written to output/
+\end{lstlisting}
+
+The \texttt{Token.grammar\_symbol()} method in \texttt{tokens.py} bridges the
+lexer (\texttt{TokenType} enums) and the grammar (plain strings like
+\texttt{'int'}, \texttt{'id'}, \texttt{'\$'}).
+
+% ────────────────────────────────────────────────────────────────────────────
+\section{Results Summary}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lXX}
+\toprule
+\textbf{Test File} & \textbf{Description} & \textbf{Result} \\
+\midrule
+\texttt{test1\_valid.decaf}      & Basic functions, arithmetic  & All 3 parsers: ACCEPT \\
+\texttt{test2\_class.decaf}      & Classes, inheritance, New()  & RD+LR: ACCEPT; LL: 1 known limitation\\
+\texttt{test3\_complex.decaf}    & Loops, arrays, interfaces    & All 3 parsers: ACCEPT \\
+\texttt{test4\_errors.decaf}     & Intentional syntax errors    & All parsers: errors reported + recovery\\
+\texttt{test5\_expressions.decaf}& Operator precedence          & All 3 parsers: ACCEPT \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The one known LL(1) limitation is that named-type variable declarations inside
+statement blocks (e.g.\ \texttt{Dog d;}) require two tokens of lookahead to
+distinguish from expression statements — an inherent LL(1) restriction. This case
+is handled correctly by both the RD parser and the LR parser.
+
+\subsection*{Project Statistics}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total source lines (9 Python files) & 3{,}513 \\
+Grammar productions                  & 121 \\
+Non-terminals                        & 55 \\
+SLR(1) automaton states              & 229 \\
+Test programs                        & 5 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ────────────────────────────────────────────────────────────────────────────
+\section*{References}
+\begin{enumerate}
+  \item Aho, A.\ V., Lam, M.\ S., Sethi, R., \& Ullman, J.\ D.\ (2006).
+        \textit{Compilers: Principles, Techniques, and Tools} (2nd ed.).
+        Addison-Wesley. (``The Dragon Book'')
+  \item Lam, M.\ S.\ et al.\ (2003). \textit{CS143 Decaf Language Specification}.
+        Stanford University.
+  \item Cooper, K.\ D., \& Torczon, L.\ (2011).
+        \textit{Engineering a Compiler} (2nd ed.). Morgan Kaufmann.
+\end{enumerate}
+
+\end{document}
